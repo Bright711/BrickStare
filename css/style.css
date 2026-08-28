@@ -713,11 +713,6 @@ textarea {
     background: rgba(59, 93, 80, 0.2); }
 
 
-/* =========================================================
-   RESPONSIVE FIXES
-   Prevent desktop hero sizing/positioning from overflowing
-   on phones and tablets.
-   ========================================================= */
 
 *, *::before, *::after {
   box-sizing: border-box;
