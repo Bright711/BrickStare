@@ -301,7 +301,7 @@ a {
       width: 33px;
       height: 33px;
       position: absolute;
-      background: rgba(59, 93, 80, 0.2);
+      background: rgba(247, 188, 62, 0.747);
       border-radius: 50%;
       right: -8px;
       bottom: 0; }
@@ -326,7 +326,7 @@ a {
       content: "";
       width: 255px;
       height: 217px;
-      background-image: url("../images/dots-green.svg");
+      background-image: url("../images/dots-yellow.svg");
       background-size: contain;
       background-repeat: no-repeat;
       -webkit-transform: translate(-40%, -40%);
@@ -376,7 +376,7 @@ a {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      border: 2px solid #3b5d50;
+      border: 2px solid #f08d0c;
       position: absolute;
       left: 0;
       top: 8px; }
@@ -394,7 +394,7 @@ a {
     -o-transition: .3s all ease;
     transition: .3s all ease; }
     .popular-product .product-item-sm a:hover {
-      color: rgba(47, 47, 47, 0.5); }
+      color: rgba(250, 190, 25, 0.733); }
   .popular-product .product-item-sm p {
     line-height: 1.4;
     margin-bottom: 10px;
@@ -409,7 +409,7 @@ a {
       content: "";
       position: absolute;
       border-radius: 20px;
-      background: #dce5e4;
+      
       width: 98px;
       height: 98px;
       top: 50%;
@@ -561,7 +561,7 @@ a {
     .footer-section .subscription-form h3 {
       font-size: 18px;
       font-weight: 500;
-      color: #3b5d50; }
+      color: #f08d0c; }
     .footer-section .subscription-form .form-control {
       height: 50px;
       border-radius: 10px;
@@ -570,7 +570,7 @@ a {
         outline: none;
         -webkit-box-shadow: none;
         box-shadow: none;
-        border-color: #3b5d50;
+        border-color: #f08d0c;
         -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
         box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2); }
       .footer-section .subscription-form .form-control::-webkit-input-placeholder {
@@ -655,7 +655,7 @@ a {
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #3b5d50;
+    background: #f08d0c;
     margin-right: 20px;
     color: #ffffff; }
 
@@ -703,14 +703,14 @@ textarea {
 
 .thankyou-icon {
   position: relative;
-  color: #3b5d50; }
+  color: #f08d0c; }
   .thankyou-icon:before {
     position: absolute;
     content: "";
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(59, 93, 80, 0.2); }
+    background: rgba(216, 160, 7, 0.801); }
 
 
 
@@ -833,8 +833,6 @@ canvas {
     min-height: auto;
   }
 
-  /* Bootstrap rows/columns should stack on phones.
-     This also protects against custom column sizing in the markup. */
   .hero .row {
     margin-left: 0;
     margin-right: 0;
