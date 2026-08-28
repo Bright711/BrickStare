@@ -1,13 +1,14 @@
-/*
-* Template Name: UntreeStore
-* Template Author: Untree.co
-* Author URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-body {
+html, body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
-  position: sticky; }
+}
+
+body {
+  position: static; }
 
 body {
   font-family: "Inter", sans-serif;
@@ -710,3 +711,252 @@ textarea {
     height: 50px;
     border-radius: 50%;
     background: rgba(59, 93, 80, 0.2); }
+
+
+/* =========================================================
+   RESPONSIVE FIXES
+   Prevent desktop hero sizing/positioning from overflowing
+   on phones and tablets.
+   ========================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Never allow media to create horizontal overflow */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+.hero,
+.custom-navbar {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.hero .container,
+.hero .container-fluid {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Keep hero text inside its column */
+.hero .intro-excerpt {
+  width: 100%;
+  max-width: 450px;
+}
+
+.hero h1,
+.hero p {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3.375rem);
+  line-height: 1.1;
+}
+
+/* The original image is allowed to reach 780px on desktop,
+   but must never force the viewport wider. */
+.hero .hero-img-wrap {
+  width: 100%;
+  max-width: 100%;
+}
+
+.hero .hero-img-wrap img {
+  display: block;
+  width: min(780px, 100%);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Decorative dots must not create horizontal scrolling */
+.hero .hero-img-wrap::after {
+  max-width: 255px;
+  pointer-events: none;
+}
+
+/* Buttons should wrap rather than push the page sideways */
+.hero .btn {
+  max-width: 100%;
+}
+
+@media (max-width: 991.98px) {
+  .hero {
+    padding: 50px 0 50px;
+  }
+
+  .hero .intro-excerpt {
+    max-width: 100%;
+  }
+
+  .hero .hero-img-wrap img {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    width: min(650px, 100%);
+    margin: 30px auto 0;
+  }
+
+  .hero .hero-img-wrap::after {
+    right: 0;
+    top: 0;
+  }
+}
+
+/* Phone layout */
+@media (max-width: 767.98px) {
+  .custom-navbar {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .custom-navbar .navbar-brand {
+    font-size: 25px;
+  }
+
+  .hero {
+    padding: 35px 0 0;
+    min-height: auto;
+  }
+
+  /* Bootstrap rows/columns should stack on phones.
+     This also protects against custom column sizing in the markup. */
+  .hero .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .hero .row > [class*="col-"] {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .hero .intro-excerpt {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 10vw, 3rem);
+    line-height: 1.08;
+    margin-bottom: 20px;
+  }
+
+  .hero p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .hero .hero-img-wrap {
+    margin-top: 25px;
+    padding: 0 15px;
+  }
+
+  .hero .hero-img-wrap img {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    top: auto;
+    right: auto;
+    left: auto;
+    margin: 0 auto;
+  }
+
+  .hero .hero-img-wrap::after {
+    width: 180px;
+    height: 153px;
+    right: -20px;
+    top: 0;
+  }
+
+  /* Prevent button groups from extending beyond the phone */
+  .hero .btn {
+    white-space: normal;
+  }
+
+  .hero .btn + .btn {
+    margin-left: 8px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 25px;
+  }
+
+  .hero .intro-excerpt {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 10vw, 2.5rem);
+  }
+
+  .hero p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .hero .btn {
+    padding: 11px 22px;
+  }
+
+  .hero .hero-img-wrap {
+    padding: 0 10px;
+  }
+
+  .hero .hero-img-wrap::after {
+    width: 140px;
+    height: 119px;
+  }
+}
+
+/* Other sections: prevent wide images/content from creating overflow */
+.product-section img,
+.why-choose-section img,
+.we-help-section img,
+.blog-section img,
+.footer-section img {
+  max-width: 100%;
+  height: auto;
+}
+
+.custom-list li {
+  max-width: 100%;
+}
+
+@media (max-width: 575.98px) {
+  .custom-list li {
+    display: block;
+    width: 100%;
+  }
+}
