@@ -576,8 +576,8 @@
 
                   <div class="form-group">
                     <button
+                      id="placeOrderBtn"
                       class="btn btn-black btn-lg py-3 btn-block"
-                      onclick="window.location = 'thankyou.html'"
                     >
                       Place Order
                     </button>
@@ -729,5 +729,46 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
     <script src="js/custom.js"></script>
+    
+    <!-- DISPATCHER SCRIPT -->
+    <script src="js/dispatcher.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const placeOrderBtn = document.getElementById("placeOrderBtn");
+        
+        if (placeOrderBtn) {
+          placeOrderBtn.addEventListener("click", function (e) {
+            e.preventDefault(); // Stop immediate redirect
+
+            // 1. Gather customer data from the checkout form
+            const customerData = {
+              firstName: document.getElementById("c_fname").value || "Unknown",
+              lastName: document.getElementById("c_lname").value || "Unknown",
+              email: document.getElementById("c_email_address").value || "No Email",
+              phone: document.getElementById("c_phone").value || "No Phone",
+              address: document.getElementById("c_address").value || "No Address",
+              country: document.getElementById("c_country").value || "Unknown"
+            };
+
+            // 2. Define order items (Mocked based on your current checkout.html table)
+            const orderItems = [
+              { name: "Top Up T-Shirt", qty: 1, price: 250.00 },
+              { name: "Polo Shirt", qty: 1, price: 100.00 }
+            ];
+            const orderTotal = 350.00;
+
+            // 3. Dispatch the order to our operations system (your dispatcher.js)
+            const orderId = OrderDispatcher.createOrder({
+              customer: customerData,
+              items: orderItems,
+              total: orderTotal
+            });
+
+            // 4. Redirect to thank you page with the order ID in the URL
+            window.location.href = `thankyou.html?orderId=${orderId}`;
+          });
+        }
+      });
+    </script>
   </body>
 </html>
