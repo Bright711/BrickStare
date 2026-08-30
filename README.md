@@ -10,8 +10,8 @@ Customer shops → Checkout → Retailer sees the order → Retailer creates del
 
 All passwords are `1234`.
 
-- Retailer: `retailer001@gmail.com` through `retailer005@gmail.com`
-- Dispatcher: `dispatcher001@gmail.com` through `dispatcher005@gmail.com`
+- Retailer: `retailer001@gmail.com`
+- Dispatcher: `dispatcher001@gmail.com` 
 - Rider: `rider001@gmail.com` through `rider005@gmail.com`
 - Customer: `customer001@gmail.com`
 
