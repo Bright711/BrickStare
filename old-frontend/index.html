@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reflex | Retailer Portal</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">R</div>
+            <div>
+                <h2>Reflex</h2>
+                <span>Retailer Portal</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">＋</span>
+                <span>New Delivery</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">▣</span>
+                <span>My Deliveries</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">♧</span>
+                <span>Notifications</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <span class="nav-icon">↪</span>
+                <span>Log Out</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div class="mobile-menu">
+                ☰
+            </div>
+
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <p>Monitor your deliveries and requests.</p>
+            </div>
+
+            <div class="profile">
+
+                <div class="notification">
+                    🔔
+                    <span class="notification-dot"></span>
+                </div>
+
+                <div class="profile-info">
+                    <div class="avatar">RO</div>
+
+                    <div>
+                        <strong>Retailer</strong>
+                        <small>Shop Manager</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+        <section class="dashboard">
+
+            <!-- WELCOME -->
+            <div class="welcome-section">
+
+                <div>
+                    <h2>Good evening, Retailer 👋</h2>
+
+                    <p>
+                        Here's what's happening with your deliveries today.
+                    </p>
+                </div>
+
+                <button class="primary-button">
+                    + New Delivery
+                </button>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon total">
+                        ▣
+                    </div>
+
+                    <div>
+                        <span>Total Deliveries</span>
+                        <h3>24</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon pending">
+                        ◷
+                    </div>
+
+                    <div>
+                        <span>Pending</span>
+                        <h3>4</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon active-status">
+                        → 
+                    </div>
+
+                    <div>
+                        <span>Out for Delivery</span>
+                        <h3>8</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon delivered">
+                        ✓
+                    </div>
+
+                    <div>
+                        <span>Delivered</span>
+                        <h3>12</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECENT DELIVERIES -->
+            <div class="section-header">
+
+                <div>
+                    <h2>Recent Deliveries</h2>
+                    <p>Track the latest delivery requests.</p>
+                </div>
+
+                <a href="#" class="view-all">
+                    View all →
+                </a>
+
+            </div>
+
+
+            <div class="delivery-table-container">
+
+                <table class="delivery-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Reference</th>
+                            <th>Customer</th>
+                            <th>Destination</th>
+                            <th>Rider</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                <strong>REF-001</strong>
+                            </td>
+
+                            <td>
+                                John Kamau
+                            </td>
+
+                            <td>
+                                Westlands
+                            </td>
+
+                            <td>
+                                Brian Otieno
+                            </td>
+
+                            <td>
+                                <span class="status assigned">
+                                    Assigned
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="details-button">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <strong>REF-002</strong>
+                            </td>
+
+                            <td>
+                                Mary Wanjiku
+                            </td>
+
+                            <td>
+                                Kilimani
+                            </td>
+
+                            <td>
+                                Kevin Mwangi
+                            </td>
+
+                            <td>
+                                <span class="status picked-up">
+                                    Picked Up
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="details-button">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <strong>REF-003</strong>
+                            </td>
+
+                            <td>
+                                Peter Otieno
+                            </td>
+
+                            <td>
+                                Lavington
+                            </td>
+
+                            <td>
+                                James Ochieng
+                            </td>
+
+                            <td>
+                                <span class="status out-delivery">
+                                    Out for Delivery
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="details-button">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <strong>REF-004</strong>
+                            </td>
+
+                            <td>
+                                Jane Njeri
+                            </td>
+
+                            <td>
+                                Karen
+                            </td>
+
+                            <td>
+                                —
+                            </td>
+
+                            <td>
+                                <span class="status requested">
+                                    Requested
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="details-button">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
