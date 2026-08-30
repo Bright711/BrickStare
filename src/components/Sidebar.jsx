@@ -20,6 +20,7 @@ function Sidebar() {
     if (confirmed) {
       localStorage.removeItem("reflexAuthenticated");
       localStorage.removeItem("reflexUserEmail");
+      localStorage.removeItem("reflexUser");
 
       navigate("/login", { replace: true });
     }
@@ -30,10 +31,10 @@ function Sidebar() {
 
       {/* LOGO */}
       <div className="logo">
-        <div className="logo-mark">R</div>
+        <div className="logo-mark">B</div>
 
         <div>
-          <h2>Reflex</h2>
+          <h2>BrickStare</h2>
           <span>Retailer Portal</span>
         </div>
       </div>
@@ -42,7 +43,7 @@ function Sidebar() {
       <nav className="navigation">
 
         <NavLink
-          to="/"
+          to="/retailer"
           end
           className={({ isActive }) =>
             `nav-item ${isActive ? "active" : ""}`
@@ -57,7 +58,7 @@ function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/new-delivery"
+          to="/retailer/new-delivery"
           className={({ isActive }) =>
             `nav-item ${isActive ? "active" : ""}`
           }
@@ -71,7 +72,7 @@ function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/my-deliveries"
+          to="/retailer/my-deliveries"
           className={({ isActive }) =>
             `nav-item ${isActive ? "active" : ""}`
           }
@@ -85,7 +86,7 @@ function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/products"
+          to="/retailer/products"
           className={({ isActive }) =>
             `nav-item ${isActive ? "active" : ""}`
           }
@@ -95,11 +96,11 @@ function Sidebar() {
             strokeWidth={2}
           />
 
-          <span>Products</span>
+          <span>Inventory</span>
         </NavLink>
 
         <NavLink
-          to="/notifications"
+          to="/retailer/notifications"
           className={({ isActive }) =>
             `nav-item ${isActive ? "active" : ""}`
           }
@@ -118,7 +119,7 @@ function Sidebar() {
       <div className="sidebar-bottom">
 
         <NavLink
-          to="/settings"
+          to="/retailer/settings"
           className={({ isActive }) =>
             `nav-item ${isActive ? "active" : ""}`
           }

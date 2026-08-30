@@ -1,126 +1,46 @@
-// 🔒 1. AUTHENTICATION CHECK
-if (!localStorage.getItem('dispatcherToken')) {
-    window.location.href = 'login.html';
+const API = "http://localhost:5000/api";
+
+if (!localStorage.getItem("dispatcherToken")) window.location.href = "/login";
+
+let deliveries = [];
+let riders = [];
+
+const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+
+async function loadData() {
+  const [dRes, rRes] = await Promise.all([fetch(`${API}/deliveries`), fetch(`${API}/users/riders`)]);
+  const d = await dRes.json(); const r = await rRes.json();
+  deliveries = d.deliveries || []; riders = r.riders || [];
+  renderDashboard();
 }
 
-// --- 2. MOCK DATA ---
-let deliveries = [
-    { id: 'ORD-1001', customer: 'Fahima Janice', address: '123 Main St, City', items: 3 },
-    { id: 'ORD-1002', customer: 'Viggey Egeiza', address: '456 Oak Ave, Town', items: 1 },
-    { id: 'ORD-1003', customer: 'Mariam Magero', address: '789 Pine Rd, Village', items: 5 }
-];
-
-let riders = [
-    { id: 'R-01', name: 'Alice Rider', status: 'available', location: 'Downtown' },
-    { id: 'R-02', name: 'Charlie Driver', status: 'available', location: 'Uptown' },
-    { id: 'R-03', name: 'David Speed', status: 'available', location: 'Midtown' }
-];
-
-// --- 3. INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
-    renderDashboard();
-    addLogoutButton();
-});
-
-// --- 4. LOGOUT FUNCTION ---
-function logout() {
-    localStorage.removeItem('dispatcherToken');
-    localStorage.removeItem('dispatcherUser');
-    window.location.href = 'login.html';
-}
-
-// --- 5. ADD LOGOUT BUTTON ---
-function addLogoutButton() {
-    const header = document.querySelector('header');
-    const userProfile = header.querySelector('.user-profile');
-    
-    if (userProfile && !document.getElementById('logout-btn')) {
-        const logoutBtn = document.createElement('button');
-        logoutBtn.id = 'logout-btn';
-        logoutBtn.className = 'btn btn-primary';
-        logoutBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Logout';
-        logoutBtn.onclick = logout;
-        logoutBtn.style.marginLeft = '15px';
-        userProfile.appendChild(logoutBtn);
-    }
-}
-
-// --- 6. RENDER FUNCTIONS ---
 function renderDashboard() {
-    updateStats();
-    renderDeliveries();
-    renderRiders();
+  const currentUser = JSON.parse(localStorage.getItem("dispatcherUser") || "null");
+  const nameEl = document.getElementById("dispatcherName");
+  if (nameEl && currentUser?.name) nameEl.textContent = currentUser.name;
+  const pending = deliveries.filter(d => d.status === "Pending");
+  const active = deliveries.filter(d => d.status !== "Delivered");
+  document.getElementById("stat-pending")?.replaceChildren(document.createTextNode(pending.length));
+  document.getElementById("stat-riders")?.replaceChildren(document.createTextNode(riders.length));
+  const completed = deliveries.filter(d => d.status === "Delivered").length;
+  document.querySelector(".stat-card:nth-child(3) p")?.replaceChildren(document.createTextNode(completed));
+  const list = document.getElementById("deliveries-list");
+  if (list) list.innerHTML = active.length ? active.map(d => `
+    <div class="list-item"><div class="item-info"><h4>${esc(d.id)} · ${esc(d.customerName)}</h4><p><i class="fa-solid fa-location-dot"></i> ${esc(d.destination)}</p><p><i class="fa-solid fa-box"></i> ${esc(d.itemDescription)}</p>${d.riderName ? `<p><i class="fa-solid fa-motorcycle"></i> ${esc(d.riderName)}</p>` : ""}</div>
+    ${d.status === "Pending" ? `<div class="action-group"><select id="rider-${esc(d.id)}"><option value="">Select rider</option>${riders.filter(r => r.status === "Available").map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join("")}</select><button class="btn btn-primary" onclick="assignRider('${d.id}')">Assign</button></div>` : `<span class="status-badge">${esc(d.status)}</span>`}</div>`).join("") : `<p class="loading">No open deliveries.</p>`;
+  const riderList = document.getElementById("riders-list");
+  if (riderList) riderList.innerHTML = riders.map(r => `<div class="list-item"><div class="item-info"><h4>${esc(r.name)}</h4><p>${esc(r.email)}</p></div><span class="status-badge">${esc(r.status)}</span></div>`).join("");
 }
 
-function updateStats() {
-    const pendingEl = document.getElementById('stat-pending');
-    const ridersEl = document.getElementById('stat-riders');
-    
-    if (pendingEl) pendingEl.textContent = deliveries.length;
-    if (ridersEl) ridersEl.textContent = riders.length;
-}
+window.assignRider = async (deliveryId) => {
+  const riderId = document.getElementById(`rider-${deliveryId}`)?.value;
+  if (!riderId) return alert("Please select a rider first.");
+  const response = await fetch(`${API}/deliveries/${deliveryId}/assign`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ riderId }) });
+  const data = await response.json();
+  if (!response.ok) return alert(data.message || "Assignment failed.");
+  await loadData();
+};
 
-function renderDeliveries() {
-    const container = document.getElementById('deliveries-list');
-    if (!container) return;
-    container.innerHTML = '';
+function logout() { localStorage.removeItem("dispatcherToken"); localStorage.removeItem("dispatcherUser"); window.location.href = "/login"; }
 
-    deliveries.forEach(delivery => {
-        let riderOptions = '<option value="">Select Rider...</option>';
-        riders.forEach(rider => {
-            riderOptions += `<option value="${rider.id}">${rider.name}</option>`;
-        });
-
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `
-            <div class="item-info">
-                <h4>${delivery.id} - ${delivery.customer}</h4>
-                <p><i class="fa-solid fa-location-dot"></i> ${delivery.address} (${delivery.items} items)</p>
-            </div>
-            <div class="action-group">
-                <select id="select-${delivery.id}">${riderOptions}</select>
-                <button class="btn btn-primary" onclick="assignRider('${delivery.id}')">
-                    <i class="fa-solid fa-check"></i> Assign
-                </button>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function renderRiders() {
-    const container = document.getElementById('riders-list');
-    if (!container) return;
-    container.innerHTML = '';
-
-    riders.forEach(rider => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `
-            <div class="item-info">
-                <h4>${rider.name}</h4>
-                <p><i class="fa-solid fa-map-pin"></i> ${rider.location}</p>
-            </div>
-            <span class="status-badge">${rider.status.toUpperCase()}</span>
-        `;
-        container.appendChild(div);
-    });
-}
-
-// --- 7. ACTIONS ---
-window.assignRider = function(deliveryId) {
-    const selectBox = document.getElementById(`select-${deliveryId}`);
-    const riderId = selectBox.value;
-
-    if (!riderId) {
-        alert('Please select a rider first!');
-        return;
-    }
-
-    const rider = riders.find(r => r.id === riderId);
-    alert(`Success! Delivery ${deliveryId} assigned to ${rider.name}.`);
-
-    deliveries = deliveries.filter(d => d.id !== deliveryId);
-    renderDashboard();
-}
+document.addEventListener("DOMContentLoaded", () => { document.getElementById("logout-btn")?.addEventListener("click", logout); loadData().catch(() => alert("Start the Reflex backend on port 5000.")); setInterval(() => loadData().catch(() => {}), 5000); });

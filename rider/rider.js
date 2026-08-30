@@ -1,856 +1,286 @@
-const riderData = {
-  name: "Brian Mwangi",
-
-  deliveries: [
-    {
-      id: "REF-1025",
-      customer: "Mary Wanjiku",
-      phone: "0701 234 567",
-      address: "Kilimani, Nairobi",
-      item: "Heavy Duty Spanner x 3",
-      status: "assigned",
-      time: "10:30 AM",
-    },
-
-    {
-      id: "REF-1026",
-      customer: "David Mwangi",
-      phone: "0722 987 654",
-      address: "Lavington, Nairobi",
-      item: "Mattock x 1",
-      status: "picked-up",
-      time: "11:15 AM",
-    },
-
-    {
-      id: "REF-1027",
-      customer: "Grace Wanjiku",
-      phone: "0798 123 456",
-      address: "South B, Nairobi",
-      item: "Wheelbarrow x 1",
-      status: "delivered",
-      time: "12:40 PM",
-    },
-  ],
-};
-
-document.addEventListener("DOMContentLoaded", function () {
-  initializeRider();
-  initializeFilters();
-  initializeDeliveryButtons();
-  initializeMobileMenu();
-  initializeModal();
-  initializeLogout();
-  initializeActiveDelivery();
-});
-
-function initializeRider() {
-  const navName = document.getElementById("navRiderName");
-  const pageName = document.getElementById("pageRiderName");
-
-  if (navName) {
-    navName.textContent = riderData.name;
-  }
-
-  if (pageName) {
-    pageName.textContent = riderData.name.split(" ")[0];
-  }
-
-  const dateElement = document.getElementById("currentDate");
-
-  if (dateElement) {
-    const today = new Date();
-
-    const options = {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    };
-
-    dateElement.textContent = today.toLocaleDateString("en-US", options);
-  }
-}
-
-function initializeFilters() {
-  const filterButtons = document.querySelectorAll(".filter-button");
-  const deliveryCards = document.querySelectorAll(".delivery-card");
-
-  filterButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      filterButtons.forEach(function (item) {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      const filter = button.dataset.filter;
-
-      deliveryCards.forEach(function (card) {
-        const status = card.dataset.status;
-
-        if (filter === "all" || filter === status) {
-          card.classList.remove("hidden");
-        } else {
-          card.classList.add("hidden");
-        }
-      });
-    });
-  });
-}
-
-function initializeDeliveryButtons() {
-  const updateButtons = document.querySelectorAll(".update-status-button");
-
-  updateButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      const card = button.closest(".delivery-card");
-
-      if (!card) return;
-
-      const deliveryId = card.dataset.id;
-
-      updateDeliveryStatus(deliveryId);
-    });
-  });
-
-  const viewButtons = document.querySelectorAll(".view-delivery-button");
-
-  viewButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      const card = button.closest(".delivery-card");
-
-      if (!card) return;
-
-      openDeliveryModal(card.dataset.id);
-    });
-  });
-}
-
-function updateDeliveryStatus(deliveryId) {
-  const delivery = riderData.deliveries.find(function (item) {
-    return item.id === deliveryId;
-  });
-
-  if (!delivery) {
-    return;
-  }
-
-  if (delivery.status === "assigned") {
-    delivery.status = "picked-up";
-
-    showNotification("Delivery marked as Picked Up.");
-  } else if (delivery.status === "picked-up") {
-    delivery.status = "delivered";
-
-    showNotification("Delivery marked as Delivered.");
-  } else {
-    showNotification("This delivery is already complete.");
-
-    return;
-  }
-
-  updateDeliveryUI(delivery);
-
-  updateCounters();
-}
-
-function updateDeliveryUI(delivery) {
-  const card = document.querySelector(
-    `.delivery-card[data-id="${delivery.id}"]`,
-  );
-
-  if (!card) return;
-
-  const statusElement = card.querySelector(".delivery-status");
-
-  if (statusElement) {
-    statusElement.textContent = formatStatus(delivery.status);
-
-    statusElement.className =
-      "delivery-status " + getStatusClass(delivery.status);
-  }
-
-  card.dataset.status = delivery.status;
-
-  const button = card.querySelector(".update-status-button");
-
-  if (button) {
-    if (delivery.status === "delivered") {
-      button.style.display = "none";
-    } else {
-      button.style.display = "inline-block";
-    }
-  }
-
-  updateActiveDelivery(delivery);
-}
-
-function initializeActiveDelivery() {
-  const active = riderData.deliveries.find(function (delivery) {
-    return delivery.status === "picked-up";
-  });
-
-  if (active) {
-    updateActiveDelivery(active);
-  }
-}
-
-function updateActiveDelivery(delivery) {
-  const id = document.getElementById("activeDeliveryId");
-  const customer = document.getElementById("activeCustomer");
-  const phone = document.getElementById("activePhone");
-  const address = document.getElementById("activeAddress");
-  const item = document.getElementById("activeItem");
-  const status = document.getElementById("activeDeliveryStatus");
-
-  if (id) {
-    id.textContent = delivery.id;
-  }
-
-  if (customer) {
-    customer.textContent = delivery.customer;
-  }
-
-  if (phone) {
-    phone.textContent = delivery.phone;
-  }
-
-  if (address) {
-    address.textContent = delivery.address;
-  }
-
-  if (item) {
-    item.textContent = delivery.item;
-  }
-
-  if (status) {
-    status.textContent = formatStatus(delivery.status);
-    status.className = "delivery-status " + getStatusClass(delivery.status);
-  }
-}
-
-const activeButton = document.getElementById("updateDeliveryButton");
-
-if (activeButton) {
-  activeButton.addEventListener("click", function () {
-    const active = riderData.deliveries.find(function (delivery) {
-      return delivery.status === "picked-up";
-    });
-
-    if (!active) {
-      showNotification("No active delivery found.");
-
-      return;
-    }
-
-    updateDeliveryStatus(active.id);
-  });
-}
-
-function formatStatus(status) {
-  if (status === "assigned") {
-    return "Assigned";
-  }
-
-  if (status === "picked-up") {
-    return "Picked Up";
-  }
-
-  if (status === "delivered") {
-    return "Delivered";
-  }
-
-  return status;
-}
-
-function getStatusClass(status) {
-  if (status === "assigned") {
-    return "status-assigned";
-  }
-
-  if (status === "picked-up") {
-    return "status-picked-up";
-  }
-
-  if (status === "delivered") {
-    return "status-delivered";
-  }
-
-  return "";
-}
-
-function updateCounters() {
-  const assigned = riderData.deliveries.filter(function (delivery) {
-    return delivery.status === "assigned";
-  }).length;
-
-  const pickedUp = riderData.deliveries.filter(function (delivery) {
-    return delivery.status === "picked-up";
-  }).length;
-
-  const delivered = riderData.deliveries.filter(function (delivery) {
-    return delivery.status === "delivered";
-  }).length;
-
-  const assignedCount = document.getElementById("assignedCount");
-  const pickedUpCount = document.getElementById("pickedUpCount");
-  const deliveredCount = document.getElementById("deliveredCount");
-  const totalCount = document.getElementById("totalCount");
-
-  if (assignedCount) {
-    assignedCount.textContent = assigned;
-  }
-
-  if (pickedUpCount) {
-    pickedUpCount.textContent = pickedUp;
-  }
-
-  if (deliveredCount) {
-    deliveredCount.textContent = delivered;
-  }
-
-  if (totalCount) {
-    totalCount.textContent = riderData.deliveries.length;
-  }
-}
-
-function initializeModal() {
-  const modal = document.getElementById("deliveryModal");
-
-  const closeButton = document.getElementById("closeDeliveryModal");
-
-  const overlay = modal.querySelector(".rider-modal-overlay");
-
-  if (closeButton) {
-    closeButton.addEventListener("click", closeDeliveryModal);
-  }
-
-  if (overlay) {
-    overlay.addEventListener("click", closeDeliveryModal);
-  }
-
-  const modalUpdateButton = document.getElementById("modalUpdateButton");
-
-  if (modalUpdateButton) {
-    modalUpdateButton.addEventListener("click", function () {
-      const id = modalUpdateButton.dataset.id;
-
-      if (id) {
-        updateDeliveryStatus(id);
-
-        closeDeliveryModal();
-      }
-    });
-  }
-}
-
-function openDeliveryModal(deliveryId) {
-  const delivery = riderData.deliveries.find(function (item) {
-    return item.id === deliveryId;
-  });
-
-  if (!delivery) return;
-
-  const modal = document.getElementById("deliveryModal");
-
-  document.getElementById("modalDeliveryId").textContent = delivery.id;
-  document.getElementById("modalCustomer").textContent = delivery.customer;
-  document.getElementById("modalPhone").textContent = delivery.phone;
-  document.getElementById("modalAddress").textContent = delivery.address;
-  document.getElementById("modalItem").textContent = delivery.item;
-  document.getElementById("modalStatus").textContent = formatStatus(
-    delivery.status,
-  );
-
-  document.getElementById("modalUpdateButton").dataset.id = delivery.id;
-
-  modal.classList.add("open");
-
-  document.body.style.overflow = "hidden";
-}
-
-function closeDeliveryModal() {
-  const modal = document.getElementById("deliveryModal");
-
-  modal.classList.remove("open");
-
-  document.body.style.overflow = "";
-}
-
-function initializeMobileMenu() {
-  const menuButton = document.getElementById("mobileMenuButton");
-
-  const menu = document.getElementById("mobileRiderMenu");
-
-  if (!menuButton || !menu) {
-    return;
-  }
-
-  menuButton.addEventListener("click", function () {
-    menu.classList.toggle("open");
-  });
-
-  menu.querySelectorAll("a").forEach(function (link) {
-    link.addEventListener("click", function () {
-      menu.classList.remove("open");
-    });
-  });
-}
-
-const callButton = document.getElementById("callCustomerButton");
-
-if (callButton) {
-  callButton.addEventListener("click", function (event) {
-    event.preventDefault();
-
-    const active = riderData.deliveries.find(function (delivery) {
-      return delivery.status === "picked-up";
-    });
-
-    if (!active) {
-      showNotification("No active customer found.");
-
-      return;
-    }
-
-    const cleanPhone = active.phone.replace(/\s/g, "");
-
-    window.location.href = "tel:" + cleanPhone;
-  });
-}
-
-function initializeLogout() {
-  const logoutButtons = document.querySelectorAll("#mobileLogout");
-
-  const logoutModal = document.getElementById("logoutModal");
-
-  const cancelLogout = document.getElementById("cancelLogout");
-
-  const confirmLogout = document.getElementById("confirmLogout");
-
-  logoutButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      logoutModal.classList.add("open");
-    });
-  });
-
-  if (cancelLogout) {
-    cancelLogout.addEventListener("click", function () {
-      logoutModal.classList.remove("open");
-    });
-  }
-
-  if (confirmLogout) {
-    confirmLogout.addEventListener("click", function () {
-      window.location.href = "login.html";
-    });
-  }
-}
+const API = "http://localhost:5000/api";
+const riderEmail = localStorage.getItem("riderEmail");
+if (!riderEmail) window.location.href = "/login";
+
+const match = riderEmail?.match(/(\d{3})/);
+const riderId = `RIDER-${match?.[1] || "001"}`;
+let riderData = { name: `Rider ${match?.[1] || "001"}`, deliveries: [] };
+let selectedDelivery = null;
+let currentFilter = "all";
+let cameraStream = null;
+let qrScanTimer = null;
+
+const statusClass = (status) => status.toLowerCase().replace(/\s+/g, "-");
+const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 
 function showNotification(message) {
   const existing = document.querySelector(".rider-notification");
+  existing?.remove();
+  const n = document.createElement("div");
+  n.className = "rider-notification show";
+  n.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>${esc(message)}</span>`;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2600);
+}
 
-  if (existing) {
-    existing.remove();
+async function loadDeliveries() {
+  const response = await fetch(`${API}/deliveries?riderId=${encodeURIComponent(riderId)}`);
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Unable to load deliveries");
+  riderData.deliveries = data.deliveries || [];
+  renderRider();
+}
+
+function filteredDeliveries() {
+  if (currentFilter === "all") return riderData.deliveries;
+  return riderData.deliveries.filter((d) => statusClass(d.status) === currentFilter);
+}
+
+function renderHistory() {
+  const root = document.getElementById("historyList");
+  if (!root) return;
+  const completed = riderData.deliveries.filter((d) => d.status === "Delivered").sort((a,b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  root.innerHTML = completed.length ? completed.map((d) => `
+    <div class="history-row">
+      <div class="history-icon delivered-history"><i class="fa-solid fa-check"></i></div>
+      <div class="history-info"><strong>${esc(d.id)} delivered</strong><span>${esc(d.destination)} · ${esc(d.customerName)}</span></div>
+      <time>${new Date(d.updatedAt).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</time>
+    </div>`).join("") : "<p>No completed deliveries yet.</p>";
+}
+
+function renderRider() {
+  document.getElementById("navRiderName")?.replaceChildren(document.createTextNode(riderData.name));
+  document.getElementById("pageRiderName")?.replaceChildren(document.createTextNode(match?.[1] || "001"));
+  document.getElementById("assignedCount")?.replaceChildren(document.createTextNode(riderData.deliveries.filter((d) => d.status === "Assigned").length));
+  document.getElementById("pickedUpCount")?.replaceChildren(document.createTextNode(riderData.deliveries.filter((d) => d.status === "Picked Up").length));
+  document.getElementById("deliveredCount")?.replaceChildren(document.createTextNode(riderData.deliveries.filter((d) => d.status === "Delivered").length));
+  document.getElementById("totalCount")?.replaceChildren(document.createTextNode(riderData.deliveries.length));
+
+  const list = document.getElementById("deliveryList");
+  const visible = filteredDeliveries();
+  if (list) {
+    list.innerHTML = visible.length ? visible.map((d) => `
+      <article class="delivery-card" data-status="${statusClass(d.status)}" data-id="${esc(d.id)}">
+        <div class="delivery-card-header"><div><span class="delivery-id">${esc(d.id)}</span><span class="delivery-status status-${statusClass(d.status)}">${esc(d.status)}</span></div><span class="delivery-time">${new Date(d.updatedAt || d.createdAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</span></div>
+        <div class="delivery-card-body">
+          <div class="delivery-customer"><div class="mini-avatar"><i class="fa-solid fa-user"></i></div><div><strong>${esc(d.customerName)}</strong><span>${esc(d.customerPhone)}</span></div></div>
+          <div class="delivery-location"><i class="fa-solid fa-location-dot"></i><span>${esc(d.destination)}</span></div>
+          <div class="delivery-product"><span>Item</span><strong>${esc(d.itemDescription)}</strong></div>
+        </div>
+        <div class="delivery-card-footer"><button type="button" class="delivery-action-button" onclick="selectDelivery('${esc(d.id)}')">View / Update</button></div>
+      </article>`).join("") : "<p>No deliveries in this view.</p>";
   }
 
-  const notification = document.createElement("div");
-
-  notification.className = "rider-notification";
-
-  notification.innerHTML = `
-
-        <i class="fa-solid fa-circle-check"></i>
-
-        <span>${message}</span>
-
-    `;
-
-  document.body.appendChild(notification);
-
-  setTimeout(function () {
-    notification.classList.add("show");
-  }, 10);
-
-  setTimeout(function () {
-    notification.classList.remove("show");
-
-    setTimeout(function () {
-      notification.remove();
-    }, 250);
-  }, 2500);
+  renderHistory();
+  const active = riderData.deliveries.find((d) => d.status === "Picked Up") || riderData.deliveries.find((d) => d.status === "Assigned");
+  const card = document.getElementById("activeDeliveryCard");
+  let empty = document.getElementById("noActiveDelivery");
+  if (active) {
+    if (card) card.style.display = "block";
+    if (empty) empty.remove();
+    updateActive(active);
+  } else {
+    selectedDelivery = null;
+    if (card) card.style.display = "none";
+    if (!empty && card) {
+      empty = document.createElement("div");
+      empty.id = "noActiveDelivery";
+      empty.className = "active-delivery-card";
+      empty.innerHTML = "<p>No active delivery right now.</p>";
+      card.insertAdjacentElement("afterend", empty);
+    }
+  }
 }
 
-const historyButton = document.getElementById("viewHistoryButton");
-
-if (historyButton) {
-  historyButton.addEventListener("click", function () {
-    showNotification("Full delivery history will be available here.");
+function updateProgress(status) {
+  const steps = document.querySelectorAll(".delivery-progress .progress-step");
+  const lines = document.querySelectorAll(".delivery-progress .progress-line");
+  const stage = { "Assigned": 0, "Picked Up": 1, "Delivered": 2 }[status] ?? 0;
+  steps.forEach((step, index) => {
+    step.classList.toggle("completed", index < stage || status === "Delivered");
+    step.classList.toggle("current", index === stage && status !== "Delivered");
   });
+  lines.forEach((line, index) => line.classList.toggle("completed", index < stage));
 }
 
-/* BRICKSTARE RIDER LIVE LOCATION TRACKING */
+function updateActive(d) {
+  selectedDelivery = d;
+  const card = document.getElementById("activeDeliveryCard");
+  if (card) card.style.display = "block";
+  const set = (id, value) => document.getElementById(id)?.replaceChildren(document.createTextNode(value));
+  set("activeDeliveryId", d.id);
+  set("activeCustomer", d.customerName);
+  set("activePhone", d.customerPhone);
+  set("activeAddress", d.destination);
+  set("activeItem", d.itemDescription);
+  set("activeRetailer", d.retailerEmail || "Retailer");
+  set("activeDeliveryStatus", d.status);
+  updateProgress(d.status);
 
+  const button = document.getElementById("updateDeliveryButton");
+  if (button) {
+    button.textContent = d.status === "Assigned" ? "Mark as Picked Up" : d.status === "Picked Up" ? "Verify Package" : "Completed";
+    button.disabled = d.status === "Delivered";
+  }
+  const inlineVerify = document.getElementById("openVerificationButton");
+  if (inlineVerify) inlineVerify.disabled = d.status !== "Picked Up";
+}
 
-// CONFIGURATION
+window.selectDelivery = (id) => {
+  const d = riderData.deliveries.find((item) => item.id === id);
+  if (d) {
+    updateActive(d);
+    document.getElementById("activeDeliveryCard")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+};
 
-// LOCAL DEVELOPMENT
-const TRACKING_SERVER = "ws://localhost:8000";
+async function updateStatus(status) {
+  if (!selectedDelivery) return;
+  const response = await fetch(`${API}/deliveries/${selectedDelivery.id}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+  const data = await response.json();
+  if (!response.ok) return showNotification(data.message || "Unable to update status");
+  await loadDeliveries();
+  const updated = riderData.deliveries.find((d) => d.id === data.delivery.id);
+  if (updated) updateActive(updated);
+  showNotification(`Delivery ${status.toLowerCase()}.`);
+}
 
-// When deployed with HTTPS, change this to:
-// const TRACKING_SERVER = "wss://your-backend-domain.com";
-
-
-// VARIABLES
-
-let map = null;
-let riderMarker = null;
-let accuracyCircle = null;
-let watchId = null;
-let socket = null;
-
-let isTracking = false;
-
-
-// INITIALIZE MAP
-
-function initializeRiderMap() {
-  const mapElement = document.getElementById("riderMap");
-
-  if (!mapElement) {
-    console.error("Rider map element was not found.");
+function openVerification() {
+  if (!selectedDelivery || selectedDelivery.status !== "Picked Up") {
+    showNotification("Mark the package as picked up first.");
     return;
   }
-
-  // Default location: Nairobi
-  // This is only the starting position before GPS is obtained.
-  map = L.map("riderMap").setView([-1.286389, 36.817223], 13);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 20,
-    attribution: "&copy; OpenStreetMap contributors",
-  }).addTo(map);
+  const input = document.getElementById("packageIdInput");
+  if (input) input.value = "";
+  const status = document.getElementById("verificationStatus");
+  if (status) status.textContent = selectedDelivery.packageVerified ? "Package verified ✓" : "Ready to verify.";
+  const deliveredButton = document.getElementById("markDeliveredButton");
+  if (deliveredButton) deliveredButton.disabled = !selectedDelivery.packageVerified;
+  document.getElementById("verificationModal")?.classList.add("open");
 }
 
-
-// CREATE RIDER ICON
-
-function createRiderIcon() {
-  return L.divIcon({
-    className: "",
-    html: `
-            <div class="rider-marker">
-                <i class="fas fa-motorcycle"></i>
-            </div>
-        `,
-    iconSize: [42, 42],
-    iconAnchor: [21, 21],
-  });
+async function stopQrScanner() {
+  if (qrScanTimer) {
+    clearInterval(qrScanTimer);
+    qrScanTimer = null;
+  }
+  if (cameraStream) {
+    cameraStream.getTracks().forEach((track) => track.stop());
+    cameraStream = null;
+  }
+  const video = document.getElementById("qrVideo");
+  if (video) video.srcObject = null;
+  const camera = document.getElementById("qrCamera");
+  if (camera) camera.hidden = true;
 }
 
-
-// CONNECT TO WEBSOCKET SERVER
-
-function connectToTrackingServer() {
+async function startQrScanner() {
+  if (!selectedDelivery || selectedDelivery.status !== "Picked Up") {
+    showNotification("Mark the package as picked up first.");
+    return;
+  }
+  const status = document.getElementById("verificationStatus");
+  const camera = document.getElementById("qrCamera");
+  const video = document.getElementById("qrVideo");
+  if (!navigator.mediaDevices?.getUserMedia) {
+    if (status) status.textContent = "Camera access is not available in this browser. Enter the Package ID below.";
+    return;
+  }
   try {
-    socket = new WebSocket(TRACKING_SERVER);
+    if (status) status.textContent = "Allow BrickStare to access your camera...";
+    camera.hidden = false;
+    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
+    video.srcObject = cameraStream;
+    await video.play();
+    if (status) status.textContent = "Camera ready. Point it at the package QR code.";
 
-    socket.onopen = function () {
-      console.log("Connected to tracking server.");
-
-      updateTrackingStatus("Connected", true);
-    };
-
-    socket.onmessage = function (event) {
-      console.log("Server message:", event.data);
-    };
-
-    socket.onerror = function (error) {
-      console.error("Tracking WebSocket error:", error);
-
-      updateTrackingStatus("Server unavailable", false);
-    };
-
-    socket.onclose = function () {
-      console.log("Tracking server disconnected.");
-
-      updateTrackingStatus("Disconnected", false);
-    };
+    if ("BarcodeDetector" in window) {
+      const detector = new BarcodeDetector({ formats: ["qr_code"] });
+      qrScanTimer = setInterval(async () => {
+        if (!video.videoWidth || !video.videoHeight || !selectedDelivery) return;
+        try {
+          const codes = await detector.detect(video);
+          const value = codes?.[0]?.rawValue?.trim();
+          if (value) {
+            await stopQrScanner();
+            await verifyPackage("qr", value);
+          }
+        } catch (_) {}
+      }, 500);
+    } else if (status) {
+      status.textContent = "Camera is on. QR scanning is not supported by this browser; enter the Package ID below.";
+    }
   } catch (error) {
-    console.error("Could not connect to tracking server:", error);
+    await stopQrScanner();
+    if (status) status.textContent = error?.name === "NotAllowedError" ? "Camera access was denied. Enter the Package ID below instead." : "Could not open the camera. Enter the Package ID below.";
   }
 }
 
-
-// START GPS TRACKING
-
-function startLiveTracking() {
-  if (!navigator.geolocation) {
-    alert("Your device/browser does not support GPS location.");
-
-    return;
-  }
-
-  if (isTracking) {
-    return;
-  }
-
-  // Connect to backend if necessary
-  if (!socket || socket.readyState !== WebSocket.OPEN) {
-    connectToTrackingServer();
-
-    // Give WebSocket a moment to connect
-    setTimeout(() => {
-      beginGPSWatch();
-    }, 500);
-  } else {
-    beginGPSWatch();
-  }
-}
-
-
-// START GPS WATCH
-
-function beginGPSWatch() {
-  if (watchId !== null) {
-    return;
-  }
-
-  updateGPSStatus("Requesting GPS permission...");
-
-  watchId = navigator.geolocation.watchPosition(
-    function (position) {
-      const latitude = position.coords.latitude;
-
-      const longitude = position.coords.longitude;
-
-      const accuracy = position.coords.accuracy;
-
-      console.log("GPS:", latitude, longitude, "Accuracy:", accuracy);
-
-      isTracking = true;
-
-      updateGPSStatus("GPS Active");
-
-      updateCoordinates(latitude, longitude);
-
-      updateLastUpdated();
-
-      updateRiderMarker(latitude, longitude, accuracy);
-
-      sendLocationToServer(latitude, longitude, accuracy);
-
-      updateButtons();
-    },
-
-    function (error) {
-      console.error("GPS error:", error);
-
-      let message = "Unable to get your location.";
-
-      if (error.code === 1) {
-        message = "Location permission was denied.";
-      } else if (error.code === 2) {
-        message = "Your location is currently unavailable.";
-      } else if (error.code === 3) {
-        message = "GPS request timed out.";
-      }
-
-      updateGPSStatus(message);
-
-      alert(message);
-    },
-
-    {
-      enableHighAccuracy: true,
-      maximumAge: 5000,
-      timeout: 15000,
-    },
-  );
-}
-
-
-// UPDATE RIDER MARKER
-
-function updateRiderMarker(latitude, longitude, accuracy) {
-  if (!map) {
-    return;
-  }
-
-  const newLocation = [latitude, longitude];
-
-  // First GPS position
-  if (!riderMarker) {
-    riderMarker = L.marker(newLocation, {
-      icon: createRiderIcon(),
-    }).addTo(map);
-
-    riderMarker.bindPopup("<strong>Rider</strong><br>Live location");
-  } else {
-    // Move existing marker
-    riderMarker.setLatLng(newLocation);
-  }
-
-  // Accuracy circle
-  if (!accuracyCircle) {
-    accuracyCircle = L.circle(newLocation, {
-      radius: accuracy,
-      weight: 1,
-      fillOpacity: 0.08,
-    }).addTo(map);
-  } else {
-    accuracyCircle.setLatLng(newLocation);
-
-    accuracyCircle.setRadius(accuracy);
-  }
-
-  // Center map on rider
-  map.setView(newLocation, Math.max(map.getZoom(), 15), {
-    animate: true,
+async function verifyPackage(method = "manual", value = "") {
+  if (!selectedDelivery) return;
+  const input = String(value || document.getElementById("packageIdInput")?.value || "").trim();
+  if (!input) return showNotification("Enter the Package ID or use Scan QR Code.");
+  const status = document.getElementById("verificationStatus");
+  if (status) status.textContent = "Checking package...";
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const response = await fetch(`${API}/deliveries/${selectedDelivery.id}/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ packageId: input, method }),
   });
+  const data = await response.json();
+  if (!response.ok) {
+    if (status) status.textContent = data.message || "Package could not be verified";
+    return;
+  }
+  if (status) status.textContent = "Package verified ✓";
+  document.getElementById("markDeliveredButton")?.removeAttribute("disabled");
+  selectedDelivery = data.delivery;
+  await loadDeliveries();
+  const updated = riderData.deliveries.find((d) => d.id === data.delivery.id);
+  if (updated) selectedDelivery = updated;
 }
 
-// SEND LOCATION TO BACKEND
-
-function sendLocationToServer(latitude, longitude, accuracy) {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    const locationData = {
-      type: "rider_location",
-
-      rider_id: getRiderId(),
-
-      latitude: latitude,
-
-      longitude: longitude,
-
-      accuracy: accuracy,
-
-      timestamp: new Date().toISOString(),
-    };
-
-    socket.send(JSON.stringify(locationData));
-
-    console.log("Location sent:", locationData);
-  } else {
-    console.warn("WebSocket is not connected.");
-  }
+function logout() {
+  localStorage.removeItem("riderEmail");
+  localStorage.removeItem("reflexUser");
+  window.location.href = "/login";
 }
 
-// STOP TRACKING
+document.addEventListener("DOMContentLoaded", () => {
+  const date = document.getElementById("currentDate");
+  if (date) date.textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
-function stopLiveTracking() {
-  if (watchId !== null) {
-    navigator.geolocation.clearWatch(watchId);
+  document.getElementById("updateDeliveryButton")?.addEventListener("click", () => {
+    if (selectedDelivery?.status === "Assigned") updateStatus("Picked Up");
+    else if (selectedDelivery?.status === "Picked Up") openVerification();
+  });
+  document.getElementById("openVerificationButton")?.addEventListener("click", openVerification);
+  document.getElementById("verifyPackageButton")?.addEventListener("click", () => verifyPackage("manual"));
+  document.getElementById("markDeliveredButton")?.addEventListener("click", async () => {
+    await stopQrScanner();
+    await updateStatus("Delivered");
+    document.getElementById("verificationModal")?.classList.remove("open");
+  });
+  document.getElementById("closeVerification")?.addEventListener("click", async () => { await stopQrScanner(); document.getElementById("verificationModal")?.classList.remove("open"); });
+  document.getElementById("scanQrButton")?.addEventListener("click", startQrScanner);
+  document.getElementById("desktopLogout")?.addEventListener("click", logout);
+  document.getElementById("mobileLogout")?.addEventListener("click", logout);
+  document.getElementById("callCustomerButton")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (selectedDelivery?.customerPhone) window.location.href = `tel:${selectedDelivery.customerPhone}`;
+  });
 
-    watchId = null;
-  }
+  document.querySelectorAll(".filter-button").forEach((button) => button.addEventListener("click", () => {
+    currentFilter = button.dataset.filter || "all";
+    document.querySelectorAll(".filter-button").forEach((item) => item.classList.toggle("active", item === button));
+    renderRider();
+  }));
 
-  isTracking = false;
-
-  updateGPSStatus("Tracking stopped");
-
-  updateTrackingStatus("Offline", false);
-
-  updateButtons();
-
-  console.log("Live tracking stopped.");
-}
-
-// GET RIDER ID
-
-function getRiderId() {
-  // For now this is an MVP rider ID.
-  // Later this should come from your login system.
-
-  let riderId = localStorage.getItem("brickstare_rider_id");
-
-  if (!riderId) {
-    riderId = "RIDER-" + Math.floor(Math.random() * 100000);
-
-    localStorage.setItem("brickstare_rider_id", riderId);
-  }
-
-  return riderId;
-}
-
-// UI HELPERS
-
-function updateCoordinates(latitude, longitude) {
-  const latitudeElement = document.getElementById("latitude");
-
-  const longitudeElement = document.getElementById("longitude");
-
-  if (latitudeElement) {
-    latitudeElement.textContent = latitude.toFixed(6);
-  }
-
-  if (longitudeElement) {
-    longitudeElement.textContent = longitude.toFixed(6);
-  }
-}
-
-function updateLastUpdated() {
-  const element = document.getElementById("lastUpdated");
-
-  if (element) {
-    element.textContent = new Date().toLocaleTimeString();
-  }
-}
-
-function updateGPSStatus(message) {
-  const element = document.getElementById("gpsStatus");
-
-  if (element) {
-    element.textContent = message;
-  }
-}
-
-function updateTrackingStatus(message, active) {
-  const element = document.getElementById("trackingStatus");
-
-  const container = document.querySelector(".tracking-status");
-
-  if (element) {
-    element.textContent = message;
-  }
-
-  if (container) {
-    container.classList.toggle("active", active);
-  }
-}
-
-function updateButtons() {
-  const startButton = document.getElementById("startTrackingBtn");
-
-  const stopButton = document.getElementById("stopTrackingBtn");
-
-  if (startButton) {
-    startButton.disabled = isTracking;
-  }
-
-  if (stopButton) {
-    stopButton.disabled = !isTracking;
-  }
-}
-
-
-// BUTTON EVENTS
-
-document.addEventListener("DOMContentLoaded", function () {
-  initializeRiderMap();
-
-  const startButton = document.getElementById("startTrackingBtn");
-
-  const stopButton = document.getElementById("stopTrackingBtn");
-
-  if (startButton) {
-    startButton.addEventListener("click", startLiveTracking);
-  }
-
-  if (stopButton) {
-    stopButton.addEventListener("click", stopLiveTracking);
-  }
-
-  updateButtons();
+  loadDeliveries().catch(() => showNotification("Start the Reflex backend on port 5000."));
+  setInterval(() => loadDeliveries().catch(() => {}), 5000);
 });

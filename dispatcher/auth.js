@@ -3,10 +3,7 @@ localStorage.removeItem('dispatcherToken');
 localStorage.removeItem('dispatcherUser');
 
 // Mock dispatcher credentials
-const MOCK_DISPATCHERS = [
-    { email: 'dispatcher@brickstare.com', password: 'admin123', name: 'Admin Dispatcher' },
-    { email: 'ops@brickstare.com', password: 'ops123', name: 'Operations Team' }
-];
+const MOCK_DISPATCHERS = Array.from({ length: 5 }, (_, i) => ({ email: `dispatcher00${i + 1}@gmail.com`, password: "1234", name: `Dispatcher 00${i + 1}` }));
 
 // Login form handler
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {

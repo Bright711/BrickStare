@@ -1,84 +1,46 @@
-const reportData = {
-    total: 45,
-    pending: 3,
-    assigned: 5,
-    in_transit: 7,
-    delivered: 30,
-    failed: 0
-};
+const API = "http://localhost:5000/api";
+if (!localStorage.getItem("dispatcherToken")) window.location.href = "/login";
 
-const topRiders = [
-    { name: 'David Speed', deliveries: 12, rating: 4.9 },
-    { name: 'Alice Rider', deliveries: 10, rating: 4.8 },
-    { name: 'Charlie Driver', deliveries: 8, rating: 4.7 },
-    { name: 'Emma Swift', deliveries: 6, rating: 4.6 },
-    { name: 'Frank Rush', deliveries: 5, rating: 4.5 }
-];
+function durationMinutes(delivery) {
+  const delivered = (delivery.statusHistory || []).find((entry) => entry.status === "Delivered");
+  if (!delivered) return null;
+  return Math.max(0, Math.round((new Date(delivered.timestamp) - new Date(delivery.createdAt)) / 60000));
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadReports();
+async function loadReports() {
+  const [deliveryResponse, riderResponse] = await Promise.all([
+    fetch(`${API}/deliveries`),
+    fetch(`${API}/users/riders`),
+  ]);
+  const deliveries = (await deliveryResponse.json()).deliveries || [];
+  const riders = (await riderResponse.json()).riders || [];
+  const delivered = deliveries.filter((d) => d.status === "Delivered");
+  const successRate = deliveries.length ? Math.round((delivered.length / deliveries.length) * 100) : 0;
+  const times = delivered.map(durationMinutes).filter((value) => value !== null);
+  const average = times.length ? Math.round(times.reduce((sum, n) => sum + n, 0) / times.length) : 0;
+
+  document.getElementById("report-total").textContent = deliveries.length;
+  document.getElementById("report-rate").textContent = `${successRate}%`;
+  document.getElementById("report-average").textContent = times.length ? `${average} min` : "—";
+
+  const statuses = ["Pending", "Assigned", "Picked Up", "Delivered"];
+  document.getElementById("status-breakdown").innerHTML = statuses.map((status) => {
+    const count = deliveries.filter((d) => d.status === status).length;
+    const percentage = deliveries.length ? Math.round((count / deliveries.length) * 100) : 0;
+    return `<div class="list-item"><div class="item-info"><h4>${status}</h4><p>${percentage}% of deliveries</p></div><strong>${count}</strong></div>`;
+  }).join("");
+
+  const riderCounts = riders.map((rider) => ({
+    name: rider.name,
+    deliveries: delivered.filter((d) => d.riderId === rider.id).length,
+  })).sort((a, b) => b.deliveries - a.deliveries);
+
+  document.getElementById("top-riders").innerHTML = riderCounts.map((rider, index) =>
+    `<div class="list-item"><div class="item-info"><h4>#${index + 1} ${rider.name}</h4><p>Completed deliveries</p></div><strong>${rider.deliveries}</strong></div>`
+  ).join("") || '<p class="loading">No rider data yet.</p>';
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadReports().catch(() => {});
+  setInterval(() => loadReports().catch(() => {}), 5000);
 });
-
-function loadReports() {
-    // Update stats
-    document.getElementById('report-total').textContent = reportData.total;
-    const successRate = Math.round((reportData.delivered / reportData.total) * 100);
-    document.getElementById('report-rate').textContent = successRate + '%';
-
-    // Render status breakdown
-    renderStatusBreakdown();
-    renderTopRiders();
-}
-
-function renderStatusBreakdown() {
-    const container = document.getElementById('status-breakdown');
-    container.innerHTML = '';
-
-    const statuses = [
-        { label: 'Pending', count: reportData.pending, color: '#f59e0b' },
-        { label: 'Assigned', count: reportData.assigned, color: '#3b82f6' },
-        { label: 'In Transit', count: reportData.in_transit, color: '#8b5cf6' },
-        { label: 'Delivered', count: reportData.delivered, color: '#10b981' },
-        { label: 'Failed', count: reportData.failed, color: '#ef4444' }
-    ];
-
-    statuses.forEach(s => {
-        const percentage = Math.round((s.count / reportData.total) * 100);
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `
-            <div class="item-info">
-                <h4>${s.label}</h4>
-                <div class="progress-bar" style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; margin-top: 8px;">
-                    <div style="width: ${percentage}%; height: 100%; background: ${s.color}; border-radius: 4px;"></div>
-                </div>
-            </div>
-            <div style="text-align: right;">
-                <strong>${s.count}</strong>
-                <p style="font-size: 0.8rem; color: #64748b;">${percentage}%</p>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function renderTopRiders() {
-    const container = document.getElementById('top-riders');
-    container.innerHTML = '';
-
-    topRiders.forEach((rider, index) => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `
-            <div class="item-info">
-                <h4>#${index + 1} ${rider.name}</h4>
-                <p><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${rider.rating} rating</p>
-            </div>
-            <div style="text-align: right;">
-                <strong>${rider.deliveries}</strong>
-                <p style="font-size: 0.8rem; color: #64748b;">deliveries</p>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}

@@ -1,251 +1,51 @@
-(function() {
-	'use strict';
+(function () {
+  "use strict";
 
-	var tinyslider = function() {
-		var el = document.querySelectorAll('.testimonial-slider');
+  const quantityContainers = document.querySelectorAll(".quantity-container");
+  quantityContainers.forEach((container) => {
+    const amount = container.querySelector(".quantity-amount");
+    const increase = container.querySelector(".increase");
+    const decrease = container.querySelector(".decrease");
+    if (!amount) return;
+    increase?.addEventListener("click", () => { amount.value = Math.max(0, Number(amount.value || 0) + 1); });
+    decrease?.addEventListener("click", () => { amount.value = Math.max(0, Number(amount.value || 0) - 1); });
+  });
 
-		if (el.length > 0) {
-			var slider = tns({
-				container: '.testimonial-slider',
-				items: 1,
-				axis: "horizontal",
-				controlsContainer: "#testimonial-nav",
-				swipeAngle: false,
-				speed: 700,
-				nav: true,
-				controls: true,
-				autoplay: true,
-				autoplayHoverPause: true,
-				autoplayTimeout: 3500,
-				autoplayButtonOutput: false
-			});
-		}
-	};
-	tinyslider();
+  window.showForm = function (formId) {
+    document.querySelectorAll(".auth-form").forEach((form) => form.classList.remove("active"));
+    document.getElementById(formId)?.classList.add("active");
+  };
 
-	
+  window.showAuthForm = window.showForm;
 
+  window.togglePassword = function (inputId, button) {
+    const input = document.getElementById(inputId); if (!input) return;
+    input.type = input.type === "password" ? "text" : "password";
+    const icon = button?.querySelector("i");
+    if (icon) icon.classList.toggle("fa-eye-slash", input.type === "text");
+    if (icon) icon.classList.toggle("fa-eye", input.type === "password");
+  };
 
-	var sitePlusMinus = function() {
-
-		var value,
-    		quantity = document.getElementsByClassName('quantity-container');
-
-		function createBindings(quantityContainer) {
-	      var quantityAmount = quantityContainer.getElementsByClassName('quantity-amount')[0];
-	      var increase = quantityContainer.getElementsByClassName('increase')[0];
-	      var decrease = quantityContainer.getElementsByClassName('decrease')[0];
-	      increase.addEventListener('click', function (e) { increaseValue(e, quantityAmount); });
-	      decrease.addEventListener('click', function (e) { decreaseValue(e, quantityAmount); });
-	    }
-
-	    function init() {
-	        for (var i = 0; i < quantity.length; i++ ) {
-						createBindings(quantity[i]);
-	        }
-	    };
-
-	    function increaseValue(event, quantityAmount) {
-	        value = parseInt(quantityAmount.value, 10);
-
-	        console.log(quantityAmount, quantityAmount.value);
-
-	        value = isNaN(value) ? 0 : value;
-	        value++;
-	        quantityAmount.value = value;
-	    }
-
-	    function decreaseValue(event, quantityAmount) {
-	        value = parseInt(quantityAmount.value, 10);
-
-	        value = isNaN(value) ? 0 : value;
-	        if (value > 0) value--;
-
-	        quantityAmount.value = value;
-	    }
-	    
-	    init();
-		
-	};
-	sitePlusMinus();
-
-
-})()
-
-function showForm(formId) {
-
-    const forms = document.querySelectorAll(".auth-form");
-
-    forms.forEach(function (form) {
-        form.classList.remove("active");
-    });
-
-    const selectedForm = document.getElementById(formId);
-
-    if (selectedForm) {
-        selectedForm.classList.add("active");
-    }
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-
-function togglePassword(inputId, button) {
-
-    const input = document.getElementById(inputId);
-
-    if (!input) return;
-
-    if (input.type === "password") {
-
-        input.type = "text";
-        button.textContent = "Hide";
-
-    } else {
-
-        input.type = "password";
-        button.textContent = "Show";
-
-    }
-}
-//Login
-
-document.getElementById("login").addEventListener("submit", function (event) {
-
+  const login = document.getElementById("loginFormElement");
+  if (login) login.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword")?.value || "";
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,password}) });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Invalid email or password");
+      localStorage.setItem("reflexUser", JSON.stringify(data.user));
+      localStorage.setItem("reflexUserEmail", data.user.email);
+      if (data.user.role === "customer") { localStorage.setItem("customerLoggedIn", "true"); window.location.href = "shop.html"; }
+      else if (data.user.role === "retailer") { localStorage.setItem("reflexAuthenticated", "true"); window.location.href = "http://localhost:5173/"; }
+      else if (data.user.role === "dispatcher") { localStorage.setItem("dispatcherToken", "true"); localStorage.setItem("dispatcherUser", JSON.stringify(data.user)); window.location.href = "dispatcher/index.html"; }
+      else if (data.user.role === "rider") { localStorage.setItem("riderEmail", data.user.email); window.location.href = "rider/rider.html"; }
+    } catch (error) { alert(error.message); }
+  });
 
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-
-    console.log("Login:", {
-        email: email,
-        password: password
-    });
-
-});
-
-//Reg
-
-document.getElementById("register").addEventListener("submit", function (event) {
-
-    event.preventDefault();
-
-    const password =
-        document.getElementById("registerPassword").value;
-
-    const confirmPassword =
-        document.getElementById("confirmPassword").value;
-
-    if (password !== confirmPassword) {
-
-        alert("Passwords do not match.");
-
-        return;
-    }
-
-    console.log("Registration submitted");
-
- 
-
-});
-
-//Forget Password
-
-document
-    .getElementById("forgotPassword")
-    .addEventListener("submit", function (event) {
-
-        event.preventDefault();
-
-        const email =
-            document.getElementById("forgotEmail").value;
-
-        console.log("Password reset requested:", email);
-
-        alert(
-            "If an account exists with this email, a password reset link will be sent."
-        );
-
-    });
-
-
- function showAuthForm(
-        formId,
-      ) {
-        const forms = document.querySelectorAll(".auth-form");
-        forms.forEach(function (form) {
-          form.classList.remove("active");
-        });
-        const selectedForm = document.getElementById(formId);
-        if (selectedForm) {
-          selectedForm.classList.add("active");
-        }
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-       function togglePassword(inputId, button) {
-        const input = document.getElementById(inputId);
-        const icon = button.querySelector("i");
-        if (input.type === "password") {
-          input.type = "text";
-          icon.classList.remove("fa-eye");
-          icon.classList.add("fa-eye-slash");
-          button.setAttribute("aria-label", "Hide password");
-        } else {
-          input.type = "password";
-          icon.classList.remove("fa-eye-slash");
-          icon.classList.add("fa-eye");
-          button.setAttribute("aria-label", "Show password");
-        }
-      }
-    document
-        .getElementById("loginFormElement")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          const email = document.getElementById("loginEmail").value.trim();
-          const password = document.getElementById("loginPassword").value;
-          if (!email || !password) {
-            alert("Please enter your email and password.");
-            return;
-          }
-           console.log(
-            "Login submitted:",
-            { email: email, password: password },
-          );
-        });
-    document
-        .getElementById("registerFormElement")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          const password = document.getElementById("registerPassword").value;
-          const confirmPassword =
-            document.getElementById("confirmPassword").value;
-          const terms = document.getElementById("terms").checked;
-          if (password !== confirmPassword) {
-            alert("The passwords do not match.");
-            return;
-          }
-          if (!terms) {
-            alert("Please agree to the Terms & Conditions and Privacy Policy.");
-            return;
-          }
-          console.log(
-            "Registration submitted",
-          );
-        });
-    document
-        .getElementById("forgotPasswordForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          const email = document.getElementById("forgotEmail").value.trim();
-          if (!email) {
-            alert("Please enter your email address.");
-            return;
-          }
-          alert(
-            "If an account exists with this email, a password reset link will be sent.",
-          );
-        });
-
+  const register = document.getElementById("registerFormElement");
+  if (register) register.addEventListener("submit", (event) => { event.preventDefault(); alert("Demo accounts are already available for this prototype."); });
+  const forgot = document.getElementById("forgotPasswordForm");
+  if (forgot) forgot.addEventListener("submit", (event) => { event.preventDefault(); alert("Please contact the system administrator to reset a demo password."); });
+})();
