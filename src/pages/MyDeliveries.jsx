@@ -14,7 +14,7 @@ setError("");
 
 
   const response = await fetch(
-    "http://localhost:5000/api/deliveries"
+    `http://localhost:5000/api/deliveries?retailerEmail=${encodeURIComponent(localStorage.getItem("reflexUserEmail") || "retailer001@gmail.com")}`
   );
 
   if (!response.ok) {
@@ -56,9 +56,11 @@ const handleFocus = () => {
 };
 
 window.addEventListener("focus", handleFocus);
+const intervalId = window.setInterval(fetchDeliveries, 5000);
 
 return () => {
   window.removeEventListener("focus", handleFocus);
+  window.clearInterval(intervalId);
 };
 
 
@@ -87,10 +89,8 @@ return "pending";
 };
 
 const handleViewDelivery = (delivery) => {
-navigate("/delivery-details", {
-state: {
-delivery,
-},
+navigate(`/retailer/delivery/${delivery.id}`, {
+state: { delivery },
 });
 };
 

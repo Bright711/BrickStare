@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
 Package,
 User,
@@ -13,12 +13,12 @@ ArrowLeft,
 function DeliveryDetails() {
 const location = useLocation();
 const navigate = useNavigate();
+const { id } = useParams();
 
 const originalDelivery = location.state?.delivery;
 
 const [delivery, setDelivery] = useState(originalDelivery || null);
 const [loading, setLoading] = useState(!originalDelivery);
-const [updatingStatus, setUpdatingStatus] = useState(false);
 const [error, setError] = useState("");
 
 // =====================================================
@@ -26,9 +26,10 @@ const [error, setError] = useState("");
 // =====================================================
 
 const fetchDelivery = useCallback(async () => {
-if (!originalDelivery?.id) {
-setLoading(false);
-return;
+const deliveryId = originalDelivery?.id || id;
+if (!deliveryId) {
+  setLoading(false);
+  return;
 }
 
 
@@ -36,7 +37,7 @@ try {
   setError("");
 
   const response = await fetch(
-    `http://localhost:5000/api/deliveries/${originalDelivery.id}`
+    `http://localhost:5000/api/deliveries/${deliveryId}`
   );
 
   if (!response.ok) {
@@ -63,7 +64,7 @@ try {
 }
 
 
-}, [originalDelivery]);
+}, [originalDelivery, id]);
 
 // =====================================================
 // LOAD DELIVERY WHEN PAGE OPENS
@@ -78,70 +79,15 @@ const handleFocus = () => {
 };
 
 window.addEventListener("focus", handleFocus);
+const intervalId = window.setInterval(fetchDelivery, 5000);
 
 return () => {
   window.removeEventListener("focus", handleFocus);
+  window.clearInterval(intervalId);
 };
 
 
 }, [fetchDelivery]);
-
-// =====================================================
-// UPDATE DELIVERY STATUS
-// =====================================================
-
-const handleStatusChange = async (event) => {
-const newStatus = event.target.value;
-
-
-if (!delivery?.id) {
-  return;
-}
-
-setUpdatingStatus(true);
-setError("");
-
-try {
-  const response = await fetch(
-    `http://localhost:5000/api/deliveries/${delivery.id}/status`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status: newStatus,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    throw new Error(
-      data.message || "Failed to update delivery status."
-    );
-  }
-
-  // Update the delivery displayed on the page
-  setDelivery(data.delivery);
-
-  // If a notification was created, log it for testing
-  if (data.notification) {
-    console.log("Notification created:", data.notification);
-  }
-} catch (err) {
-  console.error("Failed to update delivery status:", err);
-
-  setError(
-    err.message || "Unable to update delivery status."
-  );
-} finally {
-  setUpdatingStatus(false);
-}
-
-
-};
 
 // =====================================================
 // STATUS CSS CLASS
@@ -190,7 +136,7 @@ No delivery information was provided. </p> </div>
 
       <button
         className="primary-button"
-        onClick={() => navigate("/my-deliveries")}
+        onClick={() => navigate("/retailer/my-deliveries")}
       >
         <ArrowLeft size={18} />
         Back to My Deliveries
@@ -352,55 +298,10 @@ View and manage this delivery request </p> </div> </header>
     </div>
   </section>
 
-  {/* =====================================================
-      DELIVERY STATUS
-  ===================================================== */}
-
   <section className="deliveries-section">
-    <div className="section-header">
-      <div>
-        <h2>Update Delivery Status</h2>
-        <p>
-          Change the current status of this delivery.
-        </p>
-      </div>
-    </div>
-
+    <div className="section-header"><div><h2>Delivery Progress</h2><p>The delivery status is updated by the assigned rider.</p></div></div>
     <div className="delivery-form">
-      <div>
-        <label htmlFor="deliveryStatus">
-          Delivery Status
-        </label>
-
-        <select
-          id="deliveryStatus"
-          value={delivery.status}
-          onChange={handleStatusChange}
-          disabled={updatingStatus}
-        >
-          <option value="Pending">
-            Pending
-          </option>
-
-          <option value="Assigned">
-            Assigned
-          </option>
-
-          <option value="Picked Up">
-            Picked Up
-          </option>
-
-          <option value="Delivered">
-            Delivered
-          </option>
-        </select>
-
-        {updatingStatus && (
-          <p>
-            Updating delivery status...
-          </p>
-        )}
-      </div>
+      {(delivery.statusHistory || [{status: delivery.status, timestamp: delivery.updatedAt || delivery.createdAt}]).map((entry, index) => <div key={`${entry.status}-${index}`}><label>{entry.status}</label><p>{entry.timestamp ? new Date(entry.timestamp).toLocaleString() : ""}</p></div>)}
     </div>
   </section>
 
@@ -408,7 +309,7 @@ View and manage this delivery request </p> </div> </header>
 
   <button
     className="primary-button"
-    onClick={() => navigate("/my-deliveries")}
+    onClick={() => navigate("/retailer/my-deliveries")}
   >
     <ArrowLeft size={18} />
     Back to My Deliveries

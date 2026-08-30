@@ -12,10 +12,8 @@
     <link href="../css/style.css" rel="stylesheet"/>
     <link href="rider.css" rel="stylesheet"/>
 
-    <!-- Leaflet Map CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-    <title>BrickStare Equip - Rider Dashboard</title>
+    <title>BrickStare - Rider Dashboard</title>
   </head>
 
   <body>
@@ -23,7 +21,7 @@
 
     <nav class="rider-navbar">
       <div class="rider-navbar-inner">
-        <a href="index.html" class="rider-brand"> BrickStare Equip </a>
+        <a href="#dashboard" class="rider-brand">BrickStare</a>
 
         <div class="rider-nav-right">
           <div class="rider-status">
@@ -252,6 +250,12 @@
               </div>
             </div>
 
+            <div class="package-verification-inline" id="packageVerificationPanel">
+              <strong>Package verification</strong>
+              <p>After pickup, verify the package before marking it delivered.</p>
+              <button type="button" class="rider-secondary-button" id="openVerificationButton">Verify Package</button>
+            </div>
+
             <div class="active-delivery-actions">
               <button
                 type="button"
@@ -275,63 +279,6 @@
             </div>
           </div>
         </section>
-
-
-        <!-- LIVE RIDER TRACKING -->
-          <section class="rider-live-tracking">
-
-              <div class="tracking-header">
-                  <div>
-                      <span class="rider-eyebrow">LIVE LOCATION</span>
-                      <h2>Delivery Tracking</h2>
-                      <p>Customers can see your current delivery location.</p>
-                  </div>
-
-                  <div class="tracking-status">
-                      <span class="live-dot"></span>
-                      <span id="trackingStatus">Connecting...</span>
-                  </div>
-              </div>
-
-              <div id="riderMap" class="rider-map"></div>
-
-              <div class="tracking-details">
-
-                  <div class="tracking-detail">
-                      <span class="detail-label">GPS Status</span>
-                      <strong id="gpsStatus">Waiting for GPS...</strong>
-                  </div>
-
-                  <div class="tracking-detail">
-                      <span class="detail-label">Last Updated</span>
-                      <strong id="lastUpdated">--</strong>
-                  </div>
-
-                  <div class="tracking-detail">
-                      <span class="detail-label">Latitude</span>
-                      <strong id="latitude">--</strong>
-                  </div>
-
-                  <div class="tracking-detail">
-                      <span class="detail-label">Longitude</span>
-                      <strong id="longitude">--</strong>
-                  </div>
-
-              </div>
-
-              <div class="tracking-actions">
-                  <button id="startTrackingBtn" class="tracking-btn start">
-                      <i class="fas fa-location-crosshairs"></i>
-                      Start Live Tracking
-                  </button>
-
-                  <button id="stopTrackingBtn" class="tracking-btn stop" disabled>
-                      <i class="fas fa-location-slash"></i>
-                      Stop Tracking
-                  </button>
-              </div>
-
-          </section>
 
         <!--MY DELIVERIES -->
 
@@ -362,193 +309,7 @@
             </div>
           </div>
 
-          <div class="delivery-list" id="deliveryList">
-            <!-- DELIVERY 1 -->
-
-            <article
-              class="delivery-card"
-              data-status="assigned"
-              data-id="REF-1025"
-            >
-              <div class="delivery-card-header">
-                <div>
-                  <span class="delivery-id"> REF-1025 </span>
-
-                  <span class="delivery-status status-assigned">
-                    Assigned
-                  </span>
-                </div>
-
-                <span class="delivery-time"> 10:30 AM </span>
-              </div>
-
-              <div class="delivery-card-body">
-                <div class="delivery-customer">
-                  <div class="mini-avatar">
-                    <i class="fa-solid fa-user"></i>
-                  </div>
-
-                  <div>
-                    <strong> Mary Wanjiku </strong>
-
-                    <span> 0701 234 567 </span>
-                  </div>
-                </div>
-
-                <div class="delivery-location">
-                  <i class="fa-solid fa-location-dot"></i>
-
-                  <span> Kilimani, Nairobi </span>
-                </div>
-
-                <div class="delivery-product">
-                  <span> Item </span>
-
-                  <strong> Heavy Duty Spanner x 3 </strong>
-                </div>
-              </div>
-
-              <div class="delivery-card-footer">
-                <button
-                  type="button"
-                  class="delivery-action-button update-status-button"
-                >
-                  Update Status
-                </button>
-
-                <button
-                  type="button"
-                  class="delivery-action-icon view-delivery-button"
-                  aria-label="View delivery"
-                >
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </article>
-
-            <!-- DELIVERY 2 -->
-
-            <article
-              class="delivery-card"
-              data-status="picked-up"
-              data-id="REF-1026"
-            >
-              <div class="delivery-card-header">
-                <div>
-                  <span class="delivery-id"> REF-1026 </span>
-
-                  <span class="delivery-status status-picked-up">
-                    Picked Up
-                  </span>
-                </div>
-
-                <span class="delivery-time"> 11:15 AM </span>
-              </div>
-
-              <div class="delivery-card-body">
-                <div class="delivery-customer">
-                  <div class="mini-avatar">
-                    <i class="fa-solid fa-user"></i>
-                  </div>
-
-                  <div>
-                    <strong> David Mwangi </strong>
-
-                    <span> 0722 987 654 </span>
-                  </div>
-                </div>
-
-                <div class="delivery-location">
-                  <i class="fa-solid fa-location-dot"></i>
-
-                  <span> Lavington, Nairobi </span>
-                </div>
-
-                <div class="delivery-product">
-                  <span> Item </span>
-
-                  <strong> Mattock x 1 </strong>
-                </div>
-              </div>
-
-              <div class="delivery-card-footer">
-                <button
-                  type="button"
-                  class="delivery-action-button update-status-button"
-                >
-                  Update Status
-                </button>
-
-                <button
-                  type="button"
-                  class="delivery-action-icon view-delivery-button"
-                >
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </article>
-
-            <!-- DELIVERY 3 -->
-
-            <article
-              class="delivery-card"
-              data-status="delivered"
-              data-id="REF-1027"
-            >
-              <div class="delivery-card-header">
-                <div>
-                  <span class="delivery-id"> REF-1027 </span>
-
-                  <span class="delivery-status status-delivered">
-                    Delivered
-                  </span>
-                </div>
-
-                <span class="delivery-time"> 12:40 PM </span>
-              </div>
-
-              <div class="delivery-card-body">
-                <div class="delivery-customer">
-                  <div class="mini-avatar">
-                    <i class="fa-solid fa-user"></i>
-                  </div>
-
-                  <div>
-                    <strong> Grace Wanjiku </strong>
-
-                    <span> 0798 123 456 </span>
-                  </div>
-                </div>
-
-                <div class="delivery-location">
-                  <i class="fa-solid fa-location-dot"></i>
-
-                  <span> South B, Nairobi </span>
-                </div>
-
-                <div class="delivery-product">
-                  <span> Item </span>
-
-                  <strong> Wheelbarrow x 1 </strong>
-                </div>
-              </div>
-
-              <div class="delivery-card-footer">
-                <span class="completed-label">
-                  <i class="fa-solid fa-circle-check"></i>
-
-                  Delivery Complete
-                </span>
-
-                <button
-                  type="button"
-                  class="delivery-action-icon view-delivery-button"
-                >
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </article>
-          </div>
+          <div class="delivery-list" id="deliveryList"><p>Loading assigned deliveries...</p></div>
         </section>
 
         <!--DELIVERY HISTORY-->
@@ -566,49 +327,7 @@
             </button>
           </div>
 
-          <div class="history-card">
-            <div class="history-row">
-              <div class="history-icon delivered-history">
-                <i class="fa-solid fa-check"></i>
-              </div>
-
-              <div class="history-info">
-                <strong> REF-1027 delivered </strong>
-
-                <span> South B · Grace Wanjiku </span>
-              </div>
-
-              <time> Today, 12:40 PM </time>
-            </div>
-
-            <div class="history-row">
-              <div class="history-icon delivered-history">
-                <i class="fa-solid fa-check"></i>
-              </div>
-
-              <div class="history-info">
-                <strong> REF-1023 delivered </strong>
-
-                <span> Karen · Peter Otieno </span>
-              </div>
-
-              <time> Today, 9:45 AM </time>
-            </div>
-
-            <div class="history-row">
-              <div class="history-icon delivered-history">
-                <i class="fa-solid fa-check"></i>
-              </div>
-
-              <div class="history-info">
-                <strong> REF-1021 delivered </strong>
-
-                <span> Parklands · Alice Njeri </span>
-              </div>
-
-              <time> Yesterday, 4:20 PM </time>
-            </div>
-          </div>
+          <div class="history-card" id="historyList"><p>No completed deliveries yet.</p></div>
         </section>
       </div>
     </main>
@@ -698,9 +417,31 @@
 
 
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="../js/bootstrap.bundle.min.js"></script>
     <script src="../js/tiny-slider.js"></script>
     <script src="rider.js"></script>
-  </body>
+  
+<div class="verification-modal" id="verificationModal">
+  <div class="verification-card">
+    <button type="button" class="verification-close" id="closeVerification">&times;</button>
+    <h2>Verify Package</h2>
+    <p>Scan the package QR code or enter the package ID.</p>
+    <div class="camera-permission-note" id="cameraPermissionNote">
+      <strong>Camera access</strong>
+      <span>Allow BrickStare to access your camera to scan the package QR code.</span>
+    </div>
+    <div class="qr-camera" id="qrCamera" hidden>
+      <video id="qrVideo" autoplay playsinline muted></video>
+      <div class="qr-frame" aria-hidden="true"></div>
+    </div>
+    <button type="button" class="rider-primary-button" id="scanQrButton">Scan QR Code</button>
+    <div class="verification-or">OR</div>
+    <input id="packageIdInput" type="text" placeholder="Enter Package ID" />
+    <button type="button" class="rider-secondary-button" id="verifyPackageButton">Verify Package</button>
+    <p id="verificationStatus" class="verification-status">Ready to verify.</p>
+    <button type="button" class="rider-primary-button" id="markDeliveredButton" disabled>Mark as Delivered</button>
+  </div>
+</div>
+
+</body>
 </html>

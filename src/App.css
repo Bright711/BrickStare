@@ -478,3 +478,8 @@ button {
     min-width: 700px;
   }
 }
+
+/* Make retailer logout consistently visible at the bottom of the sidebar. */
+.sidebar-bottom { padding-bottom: 4px; }
+.logout-button { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.logout-button:hover { background: #fff7ed; color: #111827; }

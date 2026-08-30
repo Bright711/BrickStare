@@ -26,6 +26,11 @@
   </head>
 
   <body>
+    <script>
+      if (localStorage.getItem("customerLoggedIn") !== "true") {
+        window.location.replace("/login");
+      }
+    </script>
     <!-- Start Header/Navigation -->
     <nav
       class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark"
@@ -49,7 +54,7 @@
         <div class="collapse navbar-collapse" id="navbarsFurni">
           <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="shop.html">Home</a>
             </li>
             <li><a class="nav-link" href="shop.html">Shop</a></li>
             <li><a class="nav-link" href="about.html">About us</a></li>
@@ -466,113 +471,14 @@
               <div class="col-md-12">
                 <h2 class="h3 mb-3 text-black">Your Order</h2>
                 <div class="p-3 p-lg-5 border bg-white">
+                  <p class="mb-4">Review your items and enter your delivery details to place the order.</p>
                   <table class="table site-block-order-table mb-5">
                     <thead>
                       <th>Product</th>
                       <th>Total</th>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          Top Up T-Shirt <strong class="mx-2">x</strong> 1
-                        </td>
-                        <td>$250.00</td>
-                      </tr>
-                      <tr>
-                        <td>Polo Shirt <strong class="mx-2">x</strong> 1</td>
-                        <td>$100.00</td>
-                      </tr>
-                      <tr>
-                        <td class="text-black font-weight-bold">
-                          <strong>Cart Subtotal</strong>
-                        </td>
-                        <td class="text-black">$350.00</td>
-                      </tr>
-                      <tr>
-                        <td class="text-black font-weight-bold">
-                          <strong>Order Total</strong>
-                        </td>
-                        <td class="text-black font-weight-bold">
-                          <strong>$350.00</strong>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <tbody></tbody>
                   </table>
-
-                  <div class="border p-3 mb-3">
-                    <h3 class="h6 mb-0">
-                      <a
-                        class="d-block"
-                        data-bs-toggle="collapse"
-                        href="#collapsebank"
-                        role="button"
-                        aria-expanded="false"
-                        aria-controls="collapsebank"
-                        >Direct Bank Transfer</a
-                      >
-                    </h3>
-
-                    <div class="collapse" id="collapsebank">
-                      <div class="py-2">
-                        <p class="mb-0">
-                          Make your payment directly into our bank account.
-                          Please use your Order ID as the payment reference.
-                          Your order won’t be shipped until the funds have
-                          cleared in our account.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="border p-3 mb-3">
-                    <h3 class="h6 mb-0">
-                      <a
-                        class="d-block"
-                        data-bs-toggle="collapse"
-                        href="#collapsecheque"
-                        role="button"
-                        aria-expanded="false"
-                        aria-controls="collapsecheque"
-                        >Cheque Payment</a
-                      >
-                    </h3>
-
-                    <div class="collapse" id="collapsecheque">
-                      <div class="py-2">
-                        <p class="mb-0">
-                          Make your payment directly into our bank account.
-                          Please use your Order ID as the payment reference.
-                          Your order won’t be shipped until the funds have
-                          cleared in our account.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="border p-3 mb-5">
-                    <h3 class="h6 mb-0">
-                      <a
-                        class="d-block"
-                        data-bs-toggle="collapse"
-                        href="#collapsepaypal"
-                        role="button"
-                        aria-expanded="false"
-                        aria-controls="collapsepaypal"
-                        >Paypal</a
-                      >
-                    </h3>
-
-                    <div class="collapse" id="collapsepaypal">
-                      <div class="py-2">
-                        <p class="mb-0">
-                          Make your payment directly into our bank account.
-                          Please use your Order ID as the payment reference.
-                          Your order won’t be shipped until the funds have
-                          cleared in our account.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
 
                   <div class="form-group">
                     <button
@@ -729,45 +635,32 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
     <script src="js/custom.js"></script>
-    
-    <!-- DISPATCHER SCRIPT -->
-    <script src="js/dispatcher.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const placeOrderBtn = document.getElementById("placeOrderBtn");
-        
-        if (placeOrderBtn) {
-          placeOrderBtn.addEventListener("click", function (e) {
-            e.preventDefault(); // Stop immediate redirect
-
-            // 1. Gather customer data from the checkout form
-            const customerData = {
-              firstName: document.getElementById("c_fname").value || "Unknown",
-              lastName: document.getElementById("c_lname").value || "Unknown",
-              email: document.getElementById("c_email_address").value || "No Email",
-              phone: document.getElementById("c_phone").value || "No Phone",
-              address: document.getElementById("c_address").value || "No Address",
-              country: document.getElementById("c_country").value || "Unknown"
-            };
-
-            // 2. Define order items (Mocked based on your current checkout.html table)
-            const orderItems = [
-              { name: "Top Up T-Shirt", qty: 1, price: 250.00 },
-              { name: "Polo Shirt", qty: 1, price: 100.00 }
-            ];
-            const orderTotal = 350.00;
-
-            // 3. Dispatch the order to our operations system (your dispatcher.js)
-            const orderId = OrderDispatcher.createOrder({
-              customer: customerData,
-              items: orderItems,
-              total: orderTotal
-            });
-
-            // 4. Redirect to thank you page with the order ID in the URL
-            window.location.href = `thankyou.html?orderId=${orderId}`;
-          });
+    <script src="js/customer-cart.js"></script>    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const cart = ReflexCart.getCart();
+        const tableBody = document.querySelector(".site-block-order-table tbody");
+        if (tableBody) {
+          const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+          tableBody.innerHTML = cart.map(item => `<tr><td>${item.name} <strong class="mx-2">x</strong> ${item.quantity}</td><td>Ksh ${(item.price * item.quantity).toLocaleString()}</td></tr>`).join("") + `<tr><td class="text-black font-weight-bold"><strong>Order Total</strong></td><td class="text-black font-weight-bold"><strong>Ksh ${total.toLocaleString()}</strong></td></tr>`;
         }
+        const button = document.getElementById("placeOrderBtn");
+        button?.addEventListener("click", async (event) => {
+          event.preventDefault();
+          if (!cart.length) return alert("Your cart is empty.");
+          const first = document.getElementById("c_fname")?.value.trim() || "Customer";
+          const last = document.getElementById("c_lname")?.value.trim() || "";
+          const phone = document.getElementById("c_phone")?.value.trim();
+          const currentUser = JSON.parse(localStorage.getItem("reflexUser") || "null");
+          const email = currentUser?.role === "customer" ? currentUser.email : document.getElementById("c_email_address")?.value.trim();
+          const address = document.getElementById("c_address")?.value.trim();
+          if (!phone || !address) return alert("Please enter your phone number and delivery address.");
+          button.disabled = true; button.textContent = "Placing Order...";
+          try {
+            const response = await fetch("http://localhost:5000/api/orders", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({customerEmail:email, retailerEmail:(localStorage.getItem("reflexRetailerEmail") || "retailer001@gmail.com"), customerName:`${first} ${last}`.trim(), phone, address, items:cart.map(i=>({productId:i.productId, quantity:i.quantity}))})});
+            const data = await response.json(); if(!response.ok || !data.success) throw new Error(data.message || "Order could not be placed");
+            localStorage.removeItem("reflexCart"); window.location.href = `thankyou.html?order=${encodeURIComponent(data.order.id)}`;
+          } catch(error) { alert(error.message); button.disabled=false; button.textContent="Place Order"; }
+        });
       });
     </script>
   </body>

@@ -206,7 +206,7 @@ Manage your retailer portal settings </p> </div> </header>
         <button
           type="button"
           className="cancel-button"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/retailer")}
         >
           <ArrowLeft size={18} />
           Cancel

@@ -1,13 +1,7 @@
 import "./App.css";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
-
 import Dashboard from "./pages/Dashboard";
 import NewDelivery from "./pages/NewDelivery";
 import MyDeliveries from "./pages/MyDeliveries";
@@ -16,56 +10,33 @@ import DeliveryDetails from "./pages/DeliveryDetails";
 import Products from "./pages/Products";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 
-function ProtectedLayout() {
-  const isAuthenticated =
-    localStorage.getItem("reflexAuthenticated") === "true";
+function ShopHome() {
+  window.location.replace("/shop.html");
+  return null;
+}
 
-  if (!isAuthenticated) {
+function ProtectedRetailerLayout() {
+  const isAuthenticated = localStorage.getItem("reflexAuthenticated") === "true";
+  const user = JSON.parse(localStorage.getItem("reflexUser") || "null");
+
+  if (!isAuthenticated || user?.role !== "retailer") {
     return <Navigate to="/login" replace />;
   }
 
   return (
     <>
       <Sidebar />
-
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-
-        <Route
-          path="/new-delivery"
-          element={<NewDelivery />}
-        />
-
-        <Route
-          path="/my-deliveries"
-          element={<MyDeliveries />}
-        />
-
-        <Route
-          path="/notifications"
-          element={<Notifications />}
-        />
-
-        <Route
-          path="/delivery/:id"
-          element={<DeliveryDetails />}
-        />
-
-        <Route
-          path="/products"
-          element={<Products />}
-        />
-
-        <Route
-          path="/settings"
-          element={<Settings />}
-        />
-
-        <Route
-          path="*"
-          element={<Navigate to="/" replace />}
-        />
+        <Route index element={<Dashboard />} />
+        <Route path="new-delivery" element={<NewDelivery />} />
+        <Route path="my-deliveries" element={<MyDeliveries />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route path="delivery/:id" element={<DeliveryDetails />} />
+        <Route path="products" element={<Products />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="*" element={<Navigate to="/retailer" replace />} />
       </Routes>
     </>
   );
@@ -75,19 +46,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-        {/* LOGIN PAGE */}
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        {/* PROTECTED RETAILER PORTAL */}
-        <Route
-          path="/*"
-          element={<ProtectedLayout />}
-        />
-
+        <Route path="/" element={<ShopHome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/retailer/*" element={<ProtectedRetailerLayout />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
