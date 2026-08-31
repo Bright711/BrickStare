@@ -20,17 +20,10 @@
     />
     <link href="css/tiny-slider.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
-    <title>
-      BRICKSTARE - EQUIPMENTS
-    </title>
+    <title>BRICKSTARE - EQUIPMENTS</title>
   </head>
 
   <body>
-    <script>
-      if (localStorage.getItem("customerLoggedIn") !== "true") {
-        window.location.replace("/login");
-      }
-    </script>
     <!-- Start Header/Navigation -->
     <nav
       class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark"
@@ -117,7 +110,7 @@
                   <option value="6">Albania</option>
                   <option value="7">Bahrain</option>
                   <option value="8">Colombia</option>
-                  <option value="9">Dominican Republic</option>
+                  <option value="9">Kenya</option>
                 </select>
               </div>
               <div class="form-group row">
@@ -299,7 +292,7 @@
                         <option value="6">Albania</option>
                         <option value="7">Bahrain</option>
                         <option value="8">Colombia</option>
-                        <option value="9">Dominican Republic</option>
+                        <option value="9">Kenya</option>
                       </select>
                     </div>
 
@@ -471,7 +464,10 @@
               <div class="col-md-12">
                 <h2 class="h3 mb-3 text-black">Your Order</h2>
                 <div class="p-3 p-lg-5 border bg-white">
-                  <p class="mb-4">Review your items and enter your delivery details to place the order.</p>
+                  <p class="mb-4">
+                    Review your items and enter your delivery details to place
+                    the order.
+                  </p>
                   <table class="table site-block-order-table mb-5">
                     <thead>
                       <th>Product</th>
@@ -552,7 +548,6 @@
               supplies, we provide reliable products at affordable prices.
             </p>
 
-
             <ul class="list-unstyled custom-social">
               <li>
                 <a href="#"><span class="fa fa-brands fa-facebook-f"></span></a>
@@ -616,7 +611,7 @@
                 <script>
                   document.write(new Date().getFullYear());
                 </script>
-                . All Rights Reserved. 
+                . All Rights Reserved.
               </p>
             </div>
 
@@ -635,33 +630,6 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
     <script src="js/custom.js"></script>
-    <script src="js/customer-cart.js"></script>    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const cart = ReflexCart.getCart();
-        const tableBody = document.querySelector(".site-block-order-table tbody");
-        if (tableBody) {
-          const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-          tableBody.innerHTML = cart.map(item => `<tr><td>${item.name} <strong class="mx-2">x</strong> ${item.quantity}</td><td>Ksh ${(item.price * item.quantity).toLocaleString()}</td></tr>`).join("") + `<tr><td class="text-black font-weight-bold"><strong>Order Total</strong></td><td class="text-black font-weight-bold"><strong>Ksh ${total.toLocaleString()}</strong></td></tr>`;
-        }
-        const button = document.getElementById("placeOrderBtn");
-        button?.addEventListener("click", async (event) => {
-          event.preventDefault();
-          if (!cart.length) return alert("Your cart is empty.");
-          const first = document.getElementById("c_fname")?.value.trim() || "Customer";
-          const last = document.getElementById("c_lname")?.value.trim() || "";
-          const phone = document.getElementById("c_phone")?.value.trim();
-          const currentUser = JSON.parse(localStorage.getItem("reflexUser") || "null");
-          const email = currentUser?.role === "customer" ? currentUser.email : document.getElementById("c_email_address")?.value.trim();
-          const address = document.getElementById("c_address")?.value.trim();
-          if (!phone || !address) return alert("Please enter your phone number and delivery address.");
-          button.disabled = true; button.textContent = "Placing Order...";
-          try {
-            const response = await fetch("http://localhost:5000/api/orders", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({customerEmail:email, retailerEmail:(localStorage.getItem("reflexRetailerEmail") || "retailer001@gmail.com"), customerName:`${first} ${last}`.trim(), phone, address, items:cart.map(i=>({productId:i.productId, quantity:i.quantity}))})});
-            const data = await response.json(); if(!response.ok || !data.success) throw new Error(data.message || "Order could not be placed");
-            localStorage.removeItem("reflexCart"); window.location.href = `thankyou.html?order=${encodeURIComponent(data.order.id)}`;
-          } catch(error) { alert(error.message); button.disabled=false; button.textContent="Place Order"; }
-        });
-      });
-    </script>
+    
   </body>
 </html>

@@ -20,19 +20,16 @@
     />
     <link href="css/tiny-slider.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
-    <title>BRICKSTARE - EQUIPMENTS</title>
+    <title>
+      BrickStare Equip - Quality Hardware &amp; Equipment
+    </title>
   </head>
 
   <body>
-    <script>
-      if (localStorage.getItem("customerLoggedIn") !== "true") {
-        window.location.replace("/login");
-      }
-    </script>
     <!-- Start Header/Navigation -->
     <nav
       class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark"
-      arial-label="Furni navigation bar"
+      aria-label="BrickStare navigation bar"
     >
       <div class="container">
         <a class="navbar-brand" href="index.html">BrickStare Equip</a>
@@ -52,7 +49,7 @@
         <div class="collapse navbar-collapse" id="navbarsFurni">
           <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <a class="nav-link" href="shop.html">Home</a>
+              <a class="nav-link" href="index.html">Home</a>
             </li>
             <li><a class="nav-link" href="shop.html">Shop</a></li>
             <li><a class="nav-link" href="about.html">About us</a></li>
@@ -61,10 +58,10 @@
 
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
             <li>
-              <a class="nav-link" href="/login"><img src="images/user.svg" /></a>
+              <a class="nav-link" href="#"><img src="images/user.svg" /></a>
             </li>
             <li>
-              <a class="nav-link" href="cart.html"
+              <a class="nav-link" href="#"
                 ><img src="images/cart.svg"
               /></a>
             </li>
@@ -89,7 +86,195 @@
     </div>
     <!-- End Hero Section -->
 
-    <div class="untree_co-section before-footer-section"><div class="container"><div class="row"><div class="col-md-12"><h2 class="h3 mb-4 text-black">Your Cart</h2><div id="cart-items" class="border p-4 bg-white"></div><div class="text-end mt-4"><strong id="cart-total">Ksh 0</strong><br><button id="checkout-button" class="btn btn-black btn-lg py-3 mt-2">Proceed To Checkout</button></div></div></div></div></div>
+    <div class="untree_co-section before-footer-section">
+      <div class="container">
+        <div class="row mb-5">
+          <form class="col-md-12" method="post">
+            <div class="site-blocks-table">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="product-thumbnail">Image</th>
+                    <th class="product-name">Product</th>
+                    <th class="product-price">Price</th>
+                    <th class="product-quantity">Quantity</th>
+                    <th class="product-total">Total</th>
+                    <th class="product-remove">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="product-thumbnail">
+                      <img
+                        src="images/Hammer.png"
+                        alt="Image"
+                        class="img-fluid"
+                      />
+                    </td>
+                    <td class="product-name">
+                      <h2 class="h5 text-black">Heavy Duty Hammer</h2>
+                    </td>
+                    <td>KSh 1,850</td>
+                    <td>
+                      <div
+                        class="input-group mb-3 d-flex align-items-center quantity-container"
+                        style="max-width: 120px"
+                      >
+                        <div class="input-group-prepend">
+                          <button
+                            class="btn btn-outline-black decrease"
+                            type="button"
+                          >
+                            &minus;
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          class="form-control text-center quantity-amount"
+                          value="1"
+                          placeholder=""
+                          aria-label="Example text with button addon"
+                          aria-describedby="button-addon1"
+                        />
+                        <div class="input-group-append">
+                          <button
+                            class="btn btn-outline-black increase"
+                            type="button"
+                          >
+                            &plus;
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>KSh 1,850</td>
+                    <td><a href="#" class="btn btn-black btn-sm">X</a></td>
+                  </tr>
+
+                  <tr>
+                    <td class="product-thumbnail">
+                      <img
+                        src="images/Jembe.png"
+                        alt="Image"
+                        class="img-fluid"
+                      />
+                    </td>
+                    <td class="product-name">
+                      <h2 class="h5 text-black">Jembe</h2>
+                    </td>
+                    <td>KSh 1,850</td>
+                    <td>
+                      <div
+                        class="input-group mb-3 d-flex align-items-center quantity-container"
+                        style="max-width: 120px"
+                      >
+                        <div class="input-group-prepend">
+                          <button
+                            class="btn btn-outline-black decrease"
+                            type="button"
+                          >
+                            &minus;
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          class="form-control text-center quantity-amount"
+                          value="1"
+                          placeholder=""
+                          aria-label="Example text with button addon"
+                          aria-describedby="button-addon1"
+                        />
+                        <div class="input-group-append">
+                          <button
+                            class="btn btn-outline-black increase"
+                            type="button"
+                          >
+                            &plus;
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>KSh 1,850</td>
+                    <td><a href="#" class="btn btn-black btn-sm">X</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row mb-5">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <button class="btn btn-black btn-sm btn-block">
+                  Update Cart
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button class="btn btn-outline-black btn-sm btn-block">
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="text-black h4" for="coupon">Coupon</label>
+                <p>Enter your coupon code if you have one.</p>
+              </div>
+              <div class="col-md-8 mb-3 mb-md-0">
+                <input
+                  type="text"
+                  class="form-control py-3"
+                  id="coupon"
+                  placeholder="Coupon Code"
+                />
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-black">Apply Coupon</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pl-5">
+            <div class="row justify-content-end">
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-12 text-right border-bottom mb-5">
+                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <span class="text-black">Subtotal</span>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <strong class="text-black">KSh 5,450</strong>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-6">
+                    <span class="text-black">Total</span>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <strong class="text-black">KSh 5,450</strong>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <button
+                      class="btn btn-black btn-lg py-3 btn-block"
+                      onclick="window.location = 'checkout.html'"
+                    >
+                      Proceed To Checkout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Start Footer Section -->
     <footer class="footer-section">
@@ -107,7 +292,7 @@
                     src="images/envelope-outline.svg"
                     alt="Image"
                     class="img-fluid" /></span
-                ><span>Subscribe to Newsletter</span>
+                ><span>Get Hardware Deals &amp; Updates</span>
               </h3>
 
               <form action="#" class="row g-3">
@@ -115,14 +300,14 @@
                   <input
                     type="text"
                     class="form-control"
-                    placeholder="Enter your name"
+                    placeholder="Your name"
                   />
                 </div>
                 <div class="col-auto">
                   <input
                     type="email"
                     class="form-control"
-                    placeholder="Enter your email"
+                    placeholder="Your email address"
                   />
                 </div>
                 <div class="col-auto">
@@ -138,13 +323,15 @@
         <div class="row g-5 mb-5">
           <div class="col-lg-4">
             <div class="mb-4 footer-logo-wrap">
-              <a href="#" class="footer-logo">BrickStare</a>
+              <a href="#" class="footer-logo">BrickStare<span>.</span></a>
             </div>
             <p class="mb-4">
-              Your trusted source for quality hardware tools and equipment. From
-              jembes and pangas to wheelbarrows, construction tools, and farming
-              supplies, we provide reliable products at affordable prices.
+              Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+              quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+              vulputate velit imperdiet dolor tempor tristique. Pellentesque
+              habitant
             </p>
+
             <ul class="list-unstyled custom-social">
               <li>
                 <a href="#"><span class="fa fa-brands fa-facebook-f"></span></a>
@@ -191,9 +378,9 @@
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Sledge Hammer</a></li>
-                  <li><a href="#">Tape Measure</a></li>
-                  <li><a href="#">Mattock</a></li>
+                  <li><a href="#">Jembes</a></li>
+                  <li><a href="#">Pangas</a></li>
+                  <li><a href="#">Wheelbarrows</a></li>
                 </ul>
               </div>
             </div>
@@ -204,7 +391,7 @@
           <div class="row pt-4">
             <div class="col-lg-6">
               <p class="mb-2 text-center text-lg-start">
-                Copyright &copy;
+                Copyright &copy; BrickStare Hardware
                 <script>
                   document.write(new Date().getFullYear());
                 </script>
@@ -227,6 +414,5 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
     <script src="js/custom.js"></script>
-    <script src="js/customer-cart.js"></script>
-  <script>document.addEventListener('DOMContentLoaded',()=>{const root=document.getElementById('cart-items'),total=document.getElementById('cart-total');function render(){const cart=ReflexCart.getCart();root.innerHTML=cart.length?cart.map((i,n)=>`<div class="d-flex align-items-center justify-content-between border-bottom py-3"><div class="d-flex align-items-center"><img src="${i.image}" alt="${i.name}" style="width:70px;height:70px;object-fit:contain;margin-right:18px"><div><strong>${i.name}</strong><div>Ksh ${i.price.toLocaleString()} × ${i.quantity}</div></div></div><button class="btn btn-sm btn-outline-black" data-remove="${n}">Remove</button></div>`).join(''):'<p>Your cart is empty.</p>';total.textContent='Ksh '+cart.reduce((sum,i)=>sum+i.price*i.quantity,0).toLocaleString();root.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{const c=ReflexCart.getCart();c.splice(Number(b.dataset.remove),1);ReflexCart.saveCart(c);render()}));}render();document.getElementById('checkout-button').addEventListener('click',()=>{if(!ReflexCart.getCart().length)return alert('Your cart is empty.');window.location.href='checkout.html';});});</script></body>
+  </body>
 </html>

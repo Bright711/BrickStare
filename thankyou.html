@@ -95,18 +95,6 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
     <script src="js/custom.js"></script>
-    
-    <!-- SCRIPT TO DISPLAY ORDER ID FROM URL -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('orderId');
-        
-        if (orderId) {
-          document.getElementById('displayOrderId').textContent = orderId;
-          document.getElementById('orderConfirmation').classList.remove('d-none');
-        }
-      });
-    </script>
+
   </body>
 </html>
