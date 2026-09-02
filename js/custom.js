@@ -93,9 +93,7 @@
    BRICKSTARE AUTHENTICATION
    ========================================================= */
 
-  /* =========================================================
-   FORM ELEMENTS
-   ========================================================= */
+  /*FORM ELEMENTS*/
 
   const loginForm = document.getElementById("loginForm");
   const registerForm = document.getElementById("registerForm");
@@ -107,9 +105,7 @@
     forgot: forgotForm,
   };
 
-  /* =========================================================
-   SWITCH BETWEEN LOGIN / REGISTER / FORGOT
-   ========================================================= */
+  /*SWITCH BETWEEN LOGIN / REGISTER / FORGOT*/
 
   function showAuthForm(formName) {
     Object.values(forms).forEach((form) => {
@@ -132,9 +128,7 @@
     });
   }
 
-  /* =========================================================
-   SWITCH BUTTONS
-   ========================================================= */
+  /*SWITCH BUTTONS*/
 
   document.querySelectorAll("[data-switch]").forEach((button) => {
     button.addEventListener("click", function () {
@@ -144,9 +138,7 @@
     });
   });
 
-  /* =========================================================
-   PASSWORD SHOW / HIDE
-   ========================================================= */
+  /*PASSWORD SHOW / HIDE*/
 
   document.querySelectorAll(".password-toggle").forEach((button) => {
     button.addEventListener("click", function () {
@@ -178,9 +170,7 @@
     });
   });
 
-  /* =========================================================
-   MESSAGE FUNCTIONS
-   ========================================================= */
+  /*MESSAGE FUNCTIONS*/
 
   function showMessage(elementId, message, type = "error") {
     const element = document.getElementById(elementId);
@@ -202,17 +192,13 @@
     });
   }
 
-  /* =========================================================
-   EMAIL VALIDATION
-   ========================================================= */
+  /*EMAIL VALIDATION*/
 
   function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  /* =========================================================
-   LOGIN
-   ========================================================= */
+  /*LOGIN*/
 
   if (loginForm) {
     loginForm.addEventListener("submit", function (event) {
@@ -295,9 +281,7 @@
     });
   }
 
-  /* =========================================================
-   REGISTRATION
-   ========================================================= */
+  /*REGISTRATION*/
 
   if (registerForm) {
     registerForm.addEventListener("submit", function (event) {
@@ -408,9 +392,7 @@
     });
   }
 
-  /* =========================================================
-   FORGOT PASSWORD
-   ========================================================= */
+  /*FORGOT PASSWORD*/
 
   if (forgotForm) {
     forgotForm.addEventListener("submit", function (event) {
@@ -457,9 +439,7 @@
     });
   }
 
-  /* =========================================================
-   REMEMBER ME
-   ========================================================= */
+  /*REMEMBER ME*/
 
   const rememberMe = document.getElementById("rememberMe");
 
@@ -492,13 +472,82 @@
     });
   }
 
-  /* =========================================================
-   CURRENT YEAR
-   ========================================================= */
+  /*CURRENT YEAR */
 
   const authYear = document.getElementById("authYear");
 
   if (authYear) {
     authYear.textContent = new Date().getFullYear();
   }
+
+  // your existing code...
+
+  /* =========================================================
+     BRICKSTARE CART COUNTER
+     ========================================================= */
+
+  let cartCount = Number(localStorage.getItem("brickstare_cart_count")) || 0;
+
+  function updateCartCount() {
+    const counter = document.getElementById("cartCount");
+
+    if (!counter) return;
+
+    if (cartCount > 0) {
+      counter.textContent = cartCount;
+      counter.style.display = "flex";
+    } else {
+      counter.style.display = "none";
+    }
+  }
+
+  document.querySelectorAll(".product-section .icon-cross").forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      cartCount++;
+
+      localStorage.setItem(
+        "brickstare_cart_count",
+        cartCount
+      );
+
+      updateCartCount();
+    });
+  });
+
+  updateCartCount();
+
+
+
 })();
+
+  /*CART PRODUCT COUNTER= */
+
+  let cartCount = parseInt(localStorage.getItem("brickstare_cart_count")) || 0;
+
+  function updateCartCount() {
+    const cartCounter = document.getElementById("cartCount");
+
+    if (cartCounter) {
+      cartCounter.textContent = cartCount;
+      cartCounter.style.display = cartCount > 0 ? "flex" : "none";
+    }
+  }
+
+  document.querySelectorAll(".product-section .icon-cross").forEach((addButton) => {
+    addButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      cartCount++;
+
+      localStorage.setItem("brickstare_cart_count", cartCount);
+
+      updateCartCount();
+    });
+  });
+
+  updateCartCount();
+

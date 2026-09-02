@@ -315,7 +315,7 @@ a.more {
   border-color: #f08d0c;
 }
 .btn.btn-secondary {
-  color: #f08d0c;
+  color: #ffffff;
   background: #fae09fb4;
   border-color: #f9bf29;
 }
@@ -2047,4 +2047,68 @@ canvas {
 .cart-return-message.show {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+
+/* Small cart product counter */
+.cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-icon-wrapper #cartCount {
+  position: absolute;
+  top: 2px;
+  right: -5px;
+
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f08d0c;
+  color: #ffffff;
+
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+
+
+/* CART PRODUCT COUNTER */
+.cart-icon-wrapper {
+  position: relative !important;
+  display: inline-block !important;
+}
+
+#cartCount {
+  position: absolute !important;
+  top: 0 !important;
+  right: -7px !important;
+
+  min-width: 16px !important;
+  height: 16px !important;
+
+  padding: 0 3px !important;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background: #f08d0c !important;
+  color: #ffffff !important;
+
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  line-height: 16px !important;
+
+  border-radius: 50% !important;
+  z-index: 9999 !important;
 }
