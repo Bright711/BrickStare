@@ -65,11 +65,20 @@
         <main class="main-content">
           <header class="top-header">
             <div><h1>${pageTitle(page)}</h1><p>${pageSubtitle(page)}</p></div>
-            <div class="header-actions"><a class="notification-button" href="notifications.html" title="Notifications" aria-label="Notifications">${icon('bell')}</a><div class="profile"><div class="avatar">R</div><div><strong>${esc(name)}</strong><span>Retailer</span></div></div></div>
+           <div class="header-actions"><a class="notification-button" href="notifications.html" title="Notifications" aria-label="Notifications">${icon('bell')}</a><button class="profile" id="profileBtn" type="button" title="Account"><div class="avatar">R</div><div><strong>${esc(name)}</strong><span>Retailer</span></div></button></div>
           </header>
           ${content}
         </main>
       </div>`;
+
+    const profileBtn = document.getElementById('profileBtn');
+
+    if (profileBtn) {
+      profileBtn.addEventListener('click', () => {
+        window.location.href = 'settings.html#account';
+      });
+    }
+
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       if (!confirm('Log out of BrickStare?')) return;
       try { await api('/logout', { method:'POST' }); } catch (_) {}
@@ -183,13 +192,15 @@
       function render(tab){
         if(tab==='store')panel.innerHTML=`<h2>Store details</h2><p>Keep the information used on your retailer profile up to date.</p><form class="settings-form" id="storeForm"><div class="form-group"><label>Store name<input id="storeName" value="${esc(s.storeName)}"></label></div><div class="form-group"><label>Phone number<input id="storePhone" value="${esc(s.phone)}" placeholder="07XX XXX XXX"></label></div><div class="form-group full"><label>Email address<input value="${esc(s.email)}" disabled></label></div><div class="save-row full"><button class="button button-primary" type="submit">Save changes</button></div></form>`;
         if(tab==='notifications')panel.innerHTML=`<h2>Notifications</h2><p>Choose which retailer updates you want to receive.</p><div class="settings-option"><div><strong>Delivery updates</strong><span>Show updates when a delivery is assigned, picked up or delivered.</span></div><label class="switch"><input id="notifySwitch" type="checkbox" ${s.notifications?'checked':''}><span class="slider"></span></label></div><div class="save-row"><button class="button button-primary" id="saveNotify">Save changes</button></div>`;
-        if(tab==='account')panel.innerHTML=`<h2>Account</h2><p>Your retailer account is managed by BrickStare.</p><div class="settings-option"><div><strong>Signed in as</strong><span>${esc(s.email)}</span></div><span class="status assigned">Retailer</span></div><div class="save-row"><button class="button button-danger" id="settingsLogout">Log out</button></div>`;
+        if(tab==='account')panel.innerHTML=`<h2>Account</h2><p>Update your retailer account information or delete your account.</p><form class="settings-form" id="accountForm"><div class="form-group"><label>Full name<input id="accountName" value="${esc(readUser()?.name || '')}" required></label></div><div class="form-group"><label>Email address<input id="accountEmail" type="email" value="${esc(readUser()?.email || s.email || '')}" required></label></div><div class="form-group"><label>Phone number<input id="accountPhone" value="${esc(readUser()?.phone || s.phone || '')}" placeholder="07XX XXX XXX"></label></div><div class="save-row full"><button class="button button-primary" type="submit">Update profile</button></div></form><div class="settings-option"><div><strong>Delete account</strong><span>This permanently removes your BrickStare retailer account.</span></div><button class="button button-danger" id="deleteAccount" type="button">Delete Account</button></div><div class="save-row"><button class="button button-secondary" id="settingsLogout" type="button">Log out</button></div>`;
         const sf=document.getElementById('storeForm');if(sf)sf.onsubmit=async e=>{e.preventDefault();try{const data=await api('/settings',{method:'PATCH',body:{storeName:document.getElementById('storeName').value.trim()||'BrickStare Store',phone:document.getElementById('storePhone').value.trim(),notifications:s.notifications}});Object.assign(s,data.settings);showSaved(panel);}catch(err){showSaved(panel,err.message,true);}};
         const sn=document.getElementById('saveNotify');if(sn)sn.onclick=async()=>{try{const data=await api('/settings',{method:'PATCH',body:{storeName:s.storeName,phone:s.phone,notifications:document.getElementById('notifySwitch').checked}});Object.assign(s,data.settings);showSaved(panel);}catch(err){showSaved(panel,err.message,true);}};
+        const af=document.getElementById('accountForm');if(af)af.onsubmit=async e=>{e.preventDefault();try{const data=await api('/me',{method:'PATCH',body:{name:document.getElementById('accountName').value.trim(),email:document.getElementById('accountEmail').value.trim(),phone:document.getElementById('accountPhone').value.trim()}});setUser(data.user);s.email=data.user.email;s.phone=data.user.phone||'';showSaved(panel,'Profile updated successfully.');}catch(err){showSaved(panel,err.message,true);}};
+        const da=document.getElementById('deleteAccount');if(da)da.onclick=async()=>{if(!confirm('Are you sure you want to permanently delete your BrickStare account? This action cannot be undone.'))return;try{await api('/me',{method:'DELETE'});localStorage.removeItem(KEYS.user);window.location.href='/auth/auth.html';}catch(err){showSaved(panel,err.message,true);}};
         const lo=document.getElementById('settingsLogout');if(lo)lo.onclick=async()=>{try{await api('/logout',{method:'POST'});}catch(_){}localStorage.removeItem(KEYS.user);window.location.href='/auth/auth.html';};
       }
       function showSaved(p,msg='Changes saved.',bad=false){const n=document.createElement('div');n.className='success-note';n.textContent=msg;p.prepend(n);setTimeout(()=>n.remove(),2500);}
-      document.querySelectorAll('.settings-nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.settings-nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.tab);});render('store');
+     document.querySelectorAll('.settings-nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.settings-nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.tab);});render(window.location.hash === '#account' ? 'account' : 'store');
     } catch(err){shell('settings',`<section class="welcome-section"><div><h2>Unable to load settings</h2><p>${esc(err.message)}</p></div></section>`);}
   }
 

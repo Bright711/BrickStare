@@ -190,6 +190,74 @@ def me():
     row = query("SELECT id,name,email,phone,role FROM users WHERE id=%s LIMIT 1", (user["id"],), "one")
     return jsonify(user=row)
 
+@app.patch("/api/me")
+def update_me():
+    user, error = require_role("retailer")
+    if error:
+        return error
+
+    body = json_body()
+
+    name = body.get("name", "").strip()
+    email = body.get("email", "").strip()
+    phone = body.get("phone", "").strip()
+
+    if not name or not email:
+        return jsonify(message="Name and email are required."), 400
+
+    existing = query(
+        "SELECT id FROM users WHERE lower(email)=lower(%s) AND id<>%s LIMIT 1",
+        (email, user["id"]),
+        "one"
+    )
+
+    if existing:
+        return jsonify(message="That email is already in use."), 409
+
+    updated = execute_returning(
+        """
+        UPDATE users
+        SET name=%s, email=%s, phone=%s
+        WHERE id=%s
+        RETURNING id,name,email,phone,role
+        """,
+        (name, email, phone or None, user["id"])
+    )
+
+    return jsonify(success=True, user=updated)
+
+
+@app.delete("/api/me")
+def delete_me():
+    user, error = require_role("retailer")
+    if error:
+        return error
+
+    query(
+        "DELETE FROM users WHERE id=%s",
+        (user["id"],),
+        "none"
+    )
+
+    response = make_response(
+        jsonify(
+            success=True,
+            message="Account deleted successfully."
+        )
+    )
+
+    response.set_cookie(
+        SESSION_COOKIE,
+        "",
+        max_age=0,
+        httponly=True,
+        secure=bool(request.is_secure or os.getenv("VERCEL_ENV")),
+        samesite="Lax",
+        path="/"
+    )
+
+    return response
+
 
 @app.post("/api/register")
 def register():
