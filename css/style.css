@@ -315,7 +315,7 @@ a.more {
   border-color: #f08d0c;
 }
 .btn.btn-secondary {
-  color: #ffffff;
+  color: #f08d0c;
   background: #fae09fb4;
   border-color: #f9bf29;
 }
@@ -2049,66 +2049,8 @@ canvas {
   transform: translate(-50%, 0);
 }
 
-
-/* Small cart product counter */
-.cart-icon-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.cart-icon-wrapper #cartCount {
-  position: absolute;
-  top: 2px;
-  right: -5px;
-
-  min-width: 15px;
-  height: 15px;
-  padding: 0 3px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #f08d0c;
-  color: #ffffff;
-
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 1;
-
-  border-radius: 50%;
-  box-sizing: border-box;
-}
-
-
-
-/* CART PRODUCT COUNTER */
-.cart-icon-wrapper {
-  position: relative !important;
-  display: inline-block !important;
-}
-
-#cartCount {
-  position: absolute !important;
-  top: 0 !important;
-  right: -7px !important;
-
-  min-width: 16px !important;
-  height: 16px !important;
-
-  padding: 0 3px !important;
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-
-  background: #f08d0c !important;
-  color: #ffffff !important;
-
-  font-size: 9px !important;
-  font-weight: 700 !important;
-  line-height: 16px !important;
-
-  border-radius: 50% !important;
-  z-index: 9999 !important;
-}
+.brickstare-cart-badge{position:absolute;top:0;right:-8px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#fff;color:#2f2f2f;font-size:11px;line-height:18px;text-align:center;font-weight:700}
+.brickstare-customer-nav{display:flex;align-items:center;gap:10px;margin-right:8px;color:#fff}
+.brickstare-logout-button{border:1px solid rgba(255,255,255,.55);background:transparent;color:#fff;border-radius:6px;padding:6px 10px;font-size:13px;cursor:pointer}
+.product-item{position:relative}.brickstare-add-hint{position:absolute;left:50%;bottom:18px;transform:translate(-50%,8px);padding:8px 14px;border-radius:999px;background:#2f2f2f;color:#fff;font-size:13px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s ease}.product-item:hover .brickstare-add-hint,.product-item:focus .brickstare-add-hint{opacity:1;transform:translate(-50%,0)}
+.brickstare-item-added{min-height:22px;margin-top:-26px;margin-bottom:8px;text-align:center;color:#3b5d50;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s ease}.brickstare-item-added.show{opacity:1}

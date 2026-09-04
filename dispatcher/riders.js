@@ -1,5 +1,4 @@
-const API = "http://localhost:5000/api";
-if (!localStorage.getItem("dispatcherToken")) window.location.href = "/login";
+const API = "/api";
 
 async function loadRiders() {
   const [riderResponse, deliveryResponse] = await Promise.all([

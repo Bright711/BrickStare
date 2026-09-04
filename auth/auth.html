@@ -62,15 +62,15 @@
         <div class="collapse navbar-collapse" id="authNavbar">
           <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <a class="nav-link" href="index.html"> Home </a>
+              <a class="nav-link" href="../index.html"> Home </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="about.html"> About us </a>
+              <a class="nav-link" href="../about.html"> About us </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="contact.html"> Contact us </a>
+              <a class="nav-link" href="../contact.html"> Contact us </a>
             </li>
           </ul>
         </div>
@@ -280,32 +280,9 @@
                 </div>
 
                 <!-- ACCOUNT TYPE -->
-
-                <div class="form-group">
-                  <label for="accountType"> Account Type </label>
-
-                  <div class="input-wrapper">
-                    <i class="fa-solid fa-users"></i>
-
-                    <select
-                      class="form-control"
-                      id="accountType"
-                      name="accountType"
-                      required
-                      style="padding-left: 45px"
-                    >
-                      <option value="">Select account type</option>
-
-                      <option value="customer">Customer</option>
-
-                      <option value="rider">Rider</option>
-
-                      <option value="retailer">Retailer</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- PASSWORD -->
+<input type="hidden" id="accountType" name="accountType" value="customer" />
+<div class="form-group"><div class="auth-message show success" style="display:block">Customer account</div></div>
+<!-- PASSWORD -->
 
                 <div class="form-group">
                   <label for="registerPassword"> Password </label>

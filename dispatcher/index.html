@@ -6,13 +6,7 @@
     <title>BrickStare - Dispatch Portal</title>
     
     <!-- 🔒 AUTHENTICATION CHECK: Redirects to login if no token exists -->
-    <script>
-        if (!localStorage.getItem('dispatcherToken')) {
-            window.location.href = '/login';
-        }
-    </script>
-    
-    <!-- FontAwesome for Icons -->
+<!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="style.css">

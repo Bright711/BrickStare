@@ -1,10 +1,7 @@
-const API = "http://localhost:5000/api";
-const riderEmail = localStorage.getItem("riderEmail");
-if (!riderEmail) window.location.href = "/login";
-
-const match = riderEmail?.match(/(\d{3})/);
-const riderId = `RIDER-${match?.[1] || "001"}`;
-let riderData = { name: `Rider ${match?.[1] || "001"}`, deliveries: [] };
+const API = "/api";
+let riderEmail = "";
+let riderId = "";
+let riderData = { name: "Rider", deliveries: [] };
 let selectedDelivery = null;
 let currentFilter = "all";
 let cameraStream = null;
@@ -24,7 +21,7 @@ function showNotification(message) {
 }
 
 async function loadDeliveries() {
-  const response = await fetch(`${API}/deliveries?riderId=${encodeURIComponent(riderId)}`);
+  const response = await fetch(`${API}/deliveries`, { credentials: "same-origin" });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || "Unable to load deliveries");
   riderData.deliveries = data.deliveries || [];
@@ -50,7 +47,7 @@ function renderHistory() {
 
 function renderRider() {
   document.getElementById("navRiderName")?.replaceChildren(document.createTextNode(riderData.name));
-  document.getElementById("pageRiderName")?.replaceChildren(document.createTextNode(match?.[1] || "001"));
+  document.getElementById("pageRiderName")?.replaceChildren(document.createTextNode(riderData.name.split(/\s+/)[0] || riderData.name));
   document.getElementById("assignedCount")?.replaceChildren(document.createTextNode(riderData.deliveries.filter((d) => d.status === "Assigned").length));
   document.getElementById("pickedUpCount")?.replaceChildren(document.createTextNode(riderData.deliveries.filter((d) => d.status === "Picked Up").length));
   document.getElementById("deliveredCount")?.replaceChildren(document.createTextNode(riderData.deliveries.filter((d) => d.status === "Delivered").length));
@@ -138,6 +135,7 @@ async function updateStatus(status) {
   if (!selectedDelivery) return;
   const response = await fetch(`${API}/deliveries/${selectedDelivery.id}/status`, {
     method: "PATCH",
+    credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
   });
@@ -229,6 +227,7 @@ async function verifyPackage(method = "manual", value = "") {
   await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await fetch(`${API}/deliveries/${selectedDelivery.id}/verify`, {
     method: "POST",
+    credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ packageId: input, method }),
   });
@@ -245,13 +244,31 @@ async function verifyPackage(method = "manual", value = "") {
   if (updated) selectedDelivery = updated;
 }
 
-function logout() {
+async function logout() {
+  try { await fetch(`${API}/logout`, { method: "POST", credentials: "same-origin" }); } catch (_) {}
   localStorage.removeItem("riderEmail");
   localStorage.removeItem("reflexUser");
-  window.location.href = "/login";
+  window.location.href = "/auth/auth.html";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const response = await fetch(`${API}/me`, { credentials: "same-origin" });
+    const data = await response.json();
+    if (!response.ok || data.user?.role !== "rider") {
+      window.location.href = "/auth/auth.html";
+      return;
+    }
+    riderEmail = data.user.email;
+    const match = riderEmail.match(/(\d{3})/);
+    riderId = `RIDER-${match?.[1] || "001"}`;
+    riderData.name = data.user.name || "Rider";
+    localStorage.setItem("riderEmail", riderEmail);
+  } catch (_) {
+    window.location.href = "/auth/auth.html";
+    return;
+  }
+
   const date = document.getElementById("currentDate");
   if (date) date.textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
@@ -281,6 +298,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderRider();
   }));
 
-  loadDeliveries().catch(() => showNotification("Start the Reflex backend on port 5000."));
+  loadDeliveries().catch((error) => showNotification(error.message || "Unable to load deliveries."));
   setInterval(() => loadDeliveries().catch(() => {}), 5000);
 });

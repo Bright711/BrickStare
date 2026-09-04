@@ -58,7 +58,7 @@
 
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
             <li>
-              <a class="nav-link" href="#"><img src="images/user.svg" /></a>
+              <a class="nav-link" href="/auth/auth.html"><img src="images/user.svg" /></a>
             </li>
             <li>
               <a class="nav-link" href="#"
@@ -102,101 +102,7 @@
                     <th class="product-remove">Remove</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="product-thumbnail">
-                      <img
-                        src="images/Hammer.png"
-                        alt="Image"
-                        class="img-fluid"
-                      />
-                    </td>
-                    <td class="product-name">
-                      <h2 class="h5 text-black">Heavy Duty Hammer</h2>
-                    </td>
-                    <td>KSh 1,850</td>
-                    <td>
-                      <div
-                        class="input-group mb-3 d-flex align-items-center quantity-container"
-                        style="max-width: 120px"
-                      >
-                        <div class="input-group-prepend">
-                          <button
-                            class="btn btn-outline-black decrease"
-                            type="button"
-                          >
-                            &minus;
-                          </button>
-                        </div>
-                        <input
-                          type="text"
-                          class="form-control text-center quantity-amount"
-                          value="1"
-                          placeholder=""
-                          aria-label="Example text with button addon"
-                          aria-describedby="button-addon1"
-                        />
-                        <div class="input-group-append">
-                          <button
-                            class="btn btn-outline-black increase"
-                            type="button"
-                          >
-                            &plus;
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                    <td>KSh 1,850</td>
-                    <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                  </tr>
-
-                  <tr>
-                    <td class="product-thumbnail">
-                      <img
-                        src="images/Jembe.png"
-                        alt="Image"
-                        class="img-fluid"
-                      />
-                    </td>
-                    <td class="product-name">
-                      <h2 class="h5 text-black">Jembe</h2>
-                    </td>
-                    <td>KSh 1,850</td>
-                    <td>
-                      <div
-                        class="input-group mb-3 d-flex align-items-center quantity-container"
-                        style="max-width: 120px"
-                      >
-                        <div class="input-group-prepend">
-                          <button
-                            class="btn btn-outline-black decrease"
-                            type="button"
-                          >
-                            &minus;
-                          </button>
-                        </div>
-                        <input
-                          type="text"
-                          class="form-control text-center quantity-amount"
-                          value="1"
-                          placeholder=""
-                          aria-label="Example text with button addon"
-                          aria-describedby="button-addon1"
-                        />
-                        <div class="input-group-append">
-                          <button
-                            class="btn btn-outline-black increase"
-                            type="button"
-                          >
-                            &plus;
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                    <td>KSh 1,850</td>
-                    <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                  </tr>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
           </form>
@@ -247,7 +153,7 @@
                     <span class="text-black">Subtotal</span>
                   </div>
                   <div class="col-md-6 text-right">
-                    <strong class="text-black">KSh 5,450</strong>
+                    <strong class="text-black" data-cart-total>KSh 0</strong>
                   </div>
                 </div>
                 <div class="row mb-5">
@@ -255,13 +161,14 @@
                     <span class="text-black">Total</span>
                   </div>
                   <div class="col-md-6 text-right">
-                    <strong class="text-black">KSh 5,450</strong>
+                    <strong class="text-black" data-cart-total>KSh 0</strong>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-md-12">
                     <button
+                      id="proceedCheckoutBtn"
                       class="btn btn-black btn-lg py-3 btn-block"
                       onclick="window.location = 'checkout.html'"
                     >
@@ -326,9 +233,10 @@
               <a href="#" class="footer-logo">BrickStare<span>.</span></a>
             </div>
             <p class="mb-4">
-               Your trusted source for quality hardware tools and equipment. From
-              jembes and pangas to wheelbarrows, construction tools, and farming
-              supplies, we provide reliable products at affordable prices.
+              Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+              quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+              vulputate velit imperdiet dolor tempor tristique. Pellentesque
+              habitant
             </p>
 
             <ul class="list-unstyled custom-social">
@@ -413,5 +321,6 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
     <script src="js/custom.js"></script>
-  </body>
+  <script src="js/customer.js"></script>
+</body>
 </html>
